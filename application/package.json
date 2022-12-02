@@ -1,0 +1,10 @@
+{
+  "name": "drk.application",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "serve": "cross-env webpack serve"
+  },
+  "author": "",
+  "license": "ISC"
+}

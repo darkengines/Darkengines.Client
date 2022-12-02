@@ -1,0 +1,53 @@
+@font-face {
+    font-family: 'Altinn';
+    font-weight: bold;
+    font-style: normal;
+    src: url('./woff2/Altinn-DIN-Bold.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Altinn';
+    font-weight: normal;
+    font-style: italic;
+    src: url('./woff2/Altinn-DIN-Italic.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Altinn';
+    font-weight: normal;
+    font-style: normal;
+    src: url('./woff2/Altinn-DIN.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Altinn';
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: condensed;
+    src: url('./woff2/Altinn-DINCondensed-Bold.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Altinn';
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: condensed;
+    src: url('./woff2/Altinn-DINCondensed.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Altinn';
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: expanded;
+    src: url('./woff2/Altinn-DINExp-Bold.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Altinn';
+    font-weight: normal;
+    font-style: italic;
+    font-stretch: expanded;
+    src: url('./woff2/Altinn-DINExp-Italic.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Altinn';
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: expanded;
+    src: url('./woff2/Altinn-DINExp.woff2') format('woff2');
+}

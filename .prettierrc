@@ -1,0 +1,8 @@
+{
+	"singleQuote": true,
+	"useTabs": true,
+	"editor.formatOnSave": true,
+	"tabWidth": 4,
+	"printWidth": 100,
+	"arrowParens": "always"
+}

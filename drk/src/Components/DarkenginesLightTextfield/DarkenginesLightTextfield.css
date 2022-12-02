@@ -1,0 +1,32 @@
+.drk-textfield {
+	display: grid;
+	grid-gap: calc(var(--content-spacing) / 2);
+}
+.drk-textfield.error .drk-label,
+.drk-textfield.error:focus-within .drk-label,
+.drk-textfield.error:active .drk-label {
+	color: var(--error-color);
+}
+.drk-textfield:active .drk-label,
+.drk-textfield:focus-within .drk-label {
+	color: var(--primary-color);
+}
+.drk-textfield input {
+	padding: var(--content-padding);
+	border-radius: calc(var(--border-radius) / 2);
+	border: solid 1px var(--border-color);
+	outline-color: var(--primary-color);
+}
+.drk-textfield.error input {
+	outline-color: var(--error-color);
+	border-color: var(--error-color);
+}
+.drk-textfield .drk-label {
+	color: var(--on-background-color);
+}
+.drk-textfield .drk-helper {
+	color: var(--helper-color);
+}
+.drk-textfield .drk-error {
+	color: var(--error-color);
+}

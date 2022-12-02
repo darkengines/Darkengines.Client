@@ -1,0 +1,12 @@
+{
+  "name": "drk.update-model",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cross-env webpack build"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^3.3.0"
+  }
+}
