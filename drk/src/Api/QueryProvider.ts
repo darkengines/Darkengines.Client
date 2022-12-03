@@ -6,7 +6,6 @@ import { authenticatedQueryExecutor, queryExecutor } from './QueryExecutor';
 @injectable()
 export default class QueryProvider {
 	public query<T>(expression: Expression | string): Queryable<T> {
-		console.log('query');
 		return new Queryable(expression, queryExecutor);
 	}
 	public queryAuthenticated<T>(expression: Expression | string): Queryable<T> {
