@@ -8,7 +8,7 @@ import { ColumnFactory } from './ColumnFactory';
 import { IColumnFactory } from './IColumnFactory';
 import { IColumnFactoryResult } from './IColumnFactoryResult';
 import { IFilter } from './IDarkenginesGrid';
-import { interfaces } from '../../Model/Extensions';
+import { interfaces } from 'drk/src/Model/Interfaces';
 
 @injectable()
 export default class EntityModelColumnFactory extends ColumnFactory<IEntityModel> {

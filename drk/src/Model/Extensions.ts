@@ -1,13 +1,8 @@
 import { Container } from 'inversify';
 import DefaultModelCustomizer from './DefaultModelCustomizer';
 import { IModelCustomizer } from './IModelCustomizer';
+import { interfaces } from './Interfaces';
 import Schema from './Schema';
-
-const interfaces = {
-	IModelCustomizer: Symbol.for('IModelCustomizer'),
-	IModelResourceFactory: Symbol.for('IModelResourceFactory'),
-};
-
 
 export function addModels(container: Container) {
 	container.bind<DefaultModelCustomizer>(DefaultModelCustomizer).toSelf().inSingletonScope();
@@ -15,5 +10,3 @@ export function addModels(container: Container) {
     container.bind<Schema>(Schema).toSelf();
 	return container;
 }
-
-export { interfaces };

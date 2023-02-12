@@ -82,10 +82,7 @@ export class CompositeStateful<
 	protected async onStateChanged(stateChangedEventArgs: IStateChangedEventArgs<TState>) {
 		await this.stateChangedEvent.dispatch(this, stateChangedEventArgs);
 	}
-	protected stateChangedEvent: PromiseEventDispatcher<
-		typeof this,
-		IStateChangedEventArgs<TState>
-	>;
+	protected stateChangedEvent: PromiseEventDispatcher<this, IStateChangedEventArgs<TState>>;
 	public stateChanged: IPromiseEvent<
 		IStateful<TState, CompositeStatfulActions<TCompositeStateful, TState, TReducers>>,
 		IStateChangedEventArgs<TState>

@@ -52,7 +52,7 @@ const authentication = Stateful.create(authenticationState, {
 	authenticate: async (state, emailAddress: string, password: string) => {
 		try {
 			const idToken = await queryProvider
-				.query<string>(`Authenticate('${emailAddress}', '${password}')`)
+				.query<string>(`Authentication.Login('${emailAddress}', '${password}')`)
 				.execute();
 			const identity = Authentication.extractPayload(idToken);
 			authenticationState = { ...authenticationState, idToken, identity, error: undefined };

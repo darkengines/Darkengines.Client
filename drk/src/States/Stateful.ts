@@ -58,10 +58,10 @@ class Stateful<TState, TReducers extends Dictionary<Reducer<TState, any>>>
 		await this.stateChangedEvent.dispatch(this, stateChangedEventArgs);
 	}
 	protected stateChangedEvent: PromiseEventDispatcher<
-		typeof this,
+		this,
 		IStateChangedEventArgs<TState>
 	>;
-	public stateChanged: IPromiseEvent<typeof this, IStateChangedEventArgs<TState>>;
+	public stateChanged: IPromiseEvent<this, IStateChangedEventArgs<TState>>;
 	public state: TState;
 	public actions: Actions<TReducers>;
 }

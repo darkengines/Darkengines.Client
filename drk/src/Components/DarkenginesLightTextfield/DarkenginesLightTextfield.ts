@@ -39,6 +39,8 @@ export class DarkenginesLightTextfield extends LitElement {
 	public helperText: any;
 	@property({ type: Boolean })
 	public isValid: boolean = true;
+	@property({ type: String })
+	public autocomplete: string;
 
 	protected createRenderRoot(): Element | ShadowRoot {
 		return this;
@@ -89,6 +91,7 @@ export class DarkenginesLightTextfield extends LitElement {
 				class="darkng-input mdc-typography--body1"
 				type=${this.type}
 				placeholder=${this.placeholder}
+				autocomplete=${this.autocomplete}
 				name=${this.name}
 				.value=${live(this.value ?? '')}
 				@change=${(e: Event) => {
@@ -116,9 +119,7 @@ export class DarkenginesLightTextfield extends LitElement {
 			>`;
 		}
 		if (this.helperText) {
-			return html`<span class="drk-helper mdc-typography--caption"
-					>${this.helperText}</span
-				>`;
+			return html`<span class="drk-helper mdc-typography--caption">${this.helperText}</span>`;
 		}
 		return nothing;
 	}

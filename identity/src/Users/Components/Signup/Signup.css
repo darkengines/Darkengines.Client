@@ -1,0 +1,19 @@
+@import url(../Common/Common.css);
+
+drk-signup #gcu {
+	display: grid;
+	grid-gap: calc(var(--content-spacing) / 8);
+	justify-content: end;
+}
+drk-signup #gcu #gcu-text {
+	color: var(--helper-color);
+}
+drk-signup #gcu-field {
+	height: 16px;
+}
+drk-signup #gcu-error {
+	height: var(--mdc-typography-caption-font-size);
+}
+drk-signup .error-snackbar {
+	--mdc-theme-primary: var(--secondary-color);
+}

@@ -94,8 +94,20 @@ export async function main(outputDir: string) {
 			return importStatement;
 		});
 
+		const exportModelNameStatement = factory.createVariableStatement(
+			[factory.createToken(SyntaxKind.ExportKeyword)],
+			[
+				factory.createVariableDeclaration(
+					`${model.name}ModelName`,
+					undefined,
+					factory.createKeywordTypeNode(SyntaxKind.StringKeyword),
+					factory.createStringLiteral(model.name, true)
+				),
+			]
+		);
+
 		const source = factory.createSourceFile(
-			[...importStatements, interfaceDeclaration],
+			[...importStatements, interfaceDeclaration, exportModelNameStatement],
 			SyntaxKind.EndOfFileToken as any,
 			NodeFlags.None
 		);

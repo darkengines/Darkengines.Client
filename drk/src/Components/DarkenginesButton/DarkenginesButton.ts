@@ -4,7 +4,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import '@material/mwc-icon/mwc-icon';
-import oval from '../../Theme/Medias/oval.svg';
+import oval from './oval.svg';
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
 
 @customElement('drk-button')

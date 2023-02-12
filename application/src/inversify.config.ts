@@ -1,9 +1,11 @@
-import { AdminRoute } from './AdminRoute';
 import { Container } from 'inversify';
 import { addDarkengines } from '@drk/src/Extensions';
+import { addUsers } from './Users/Extensions';
+import { addDesigner } from './Designer/Extensions';
 
 let serviceCollection = new Container();
-serviceCollection.bind(AdminRoute).toSelf().inSingletonScope()
 addDarkengines(serviceCollection);
+addUsers(serviceCollection);
+addDesigner(serviceCollection);
 
 export { serviceCollection };

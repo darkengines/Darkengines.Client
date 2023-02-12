@@ -2,10 +2,11 @@ import { Dictionary } from 'ts-essentials';
 import { inject, injectable, multiInject } from 'inversify';
 import DefaultModelCustomizer from './DefaultModelCustomizer';
 import { IEntityModel } from './IEntityModel';
-import { interfaces } from './Extensions';
 import { queryProvider } from '../Api/QueryProvider';
 import { authentication } from '../Authentication/Authentication';
 import { IModelCustomizer } from './IModelCustomizer';
+import { interfaces } from './Interfaces';
+import { schemaSample } from '../schema_sample';
 
 @injectable()
 export default class Schema {
@@ -35,9 +36,10 @@ export default class Schema {
 		});
 	}
 	protected async fetchModel() {
-		const query = await queryProvider.query<IEntityModel[]>('ModelProvider.EntityModels');
-		const models = await query.execute();
-		
+		// const query = await queryProvider.query<IEntityModel[]>('ModelProvider.EntityModels');
+		// const models = await query.execute();
+		const models = schemaSample;
+
 		let model = models.toDictionary(
 			(model) => model.name,
 			(model) => {

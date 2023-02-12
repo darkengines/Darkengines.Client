@@ -1,0 +1,79 @@
+.mdc-text-field {
+	width: 100%;
+}
+:host {
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: auto;
+	grid-gap: var(--content-spacing);
+	justify-items: center;
+	padding: var(--content-padding);
+	width: 100%;
+	max-width: 100%;
+}
+.form {
+	display: grid;
+	padding: var(--content-padding) 0;
+	grid-gap: var(--content-spacing);
+	background-color: var(--surface-background-color);
+	border-radius: var(--border-radius);
+	width: 100%;
+	max-width: 420px;
+	margin: var(--content-padding) auto var(--content-padding) auto;
+}
+.head {
+	display: grid;
+	padding: 0 var(--content-padding);
+	grid-auto-flow: column;
+	grid-gap: var(--content-spacing);
+	align-items: center;
+	justify-content: start;
+}
+.head svg {
+	width: 64px;
+	height: 64px;
+}
+.body {
+	padding: 0 var(--content-padding);
+	display: grid;
+	grid-gap: var(--content-spacing);
+	grid-auto-flow: row;
+}
+.error {
+	color: var(--error-color);
+	--mdc-theme-text-primary-on-background: var(--error-color);
+}
+.footer {
+	border-top: dashed 1px var(--border-color);
+	padding: var(--content-padding) var(--content-padding) 0 var(--content-padding);
+	grid-auto-flow: column;
+	grid-gap: var(--content-spacing);
+	display: grid;
+}
+.signup,
+.signin {
+	text-align: right;
+	grid-auto-flow: row;
+	grid-gap: calc(var(--content-spacing) / 2);
+	display: grid;
+	align-items: center;
+	justify-content: end;
+	justify-items: end;
+}
+.submit {
+	justify-self: end;
+}
+.forgotPassword {
+	justify-self: end;
+}
+.action-report {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	justify-items: end;
+	align-items: center;
+	gap: var(--content-spacing);
+}
+.action-report .report {
+}
+.action-report .action {
+}
