@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 import { html } from 'lit';
-import './DatetimeDisplay';
-import './DatetimeEditor';
+import './DateTimeDisplay';
+import './DateTimeEditor';
 import {
 	ComponentFactory,
 	IComponentProps,
