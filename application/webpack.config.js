@@ -12,9 +12,10 @@ const LocalizationPlugin = require('../build/webpack-plugins/localizationPlugin'
 
 const smp = new SpeedMeasurePlugin();
 module.exports = function (env) {
-	const environmentName = env.env;
-	console.log(`Environment=${environmentName}`);
 	var appSettings = require('./config/appsettings.config.json');
+	let environmentName = appSettings.Environment;
+	if (env.env) environmentName = env.env;
+	console.log(`Environment=${environmentName}`);
 	const environmentAppSettingsPath = `./config/appsettings.${environmentName}.config.json`;
 	if (fs.existsSync(environmentAppSettingsPath)) {
 		console.log(`Loading ${environmentAppSettingsPath}`);
