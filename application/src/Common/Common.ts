@@ -1,8 +1,8 @@
-import config from '../../../../config/appsettings.config.json';
+import config from '../../config/appsettings.config.json';
 import { html, svg } from 'lit';
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
 import './Common.css';
-import logo from '../../../../assets/images/logo.svg';
+import logo from '../../assets/images/logo.svg';
 import { msg } from '@lit/localize';
 
 export function signInFooter<
@@ -36,7 +36,7 @@ export function signUpFooter<
 export function defaultHeader() {
 	return html`<div class="head">
 		${svg`${unsafeSVG(logo)}`}
-		<div class="title mdc-typography--headline2">${config.Application.name}</div>
+		<div class="title mdc-typography--headline5">${config.Application.name}</div>
 	</div>`;
 }
 

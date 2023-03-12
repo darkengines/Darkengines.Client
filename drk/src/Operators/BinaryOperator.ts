@@ -31,7 +31,7 @@ export class BinaryOperator implements Operator<unknown> {
 	}
 
 	buildExpression(parameter: estree.Expression, args: any) {
-		//args = JSON.stringify(args);
+		if (args instanceof Date) args = args.toISOString();
 		const binaryExpression: estree.BinaryExpression = {
 			type: 'BinaryExpression',
 			operator: this.operator,

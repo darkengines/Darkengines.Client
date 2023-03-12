@@ -12,8 +12,6 @@ import { query } from 'lit/decorators/query.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { ref } from 'lit/directives/ref.js';
 import { repeat } from 'lit/directives/repeat.js';
-import {} from '../..';
-import '../../Data/StringExtensions';
 import { IColumn } from '../../Grid/IColumn';
 import { IDarkenginesGridActions, IDarkenginesGridProps, Order } from './IDarkenginesGrid';
 import IDarkenginesGridLayout from './IDarkenginesGridLayout';

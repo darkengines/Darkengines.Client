@@ -4,6 +4,6 @@ import { IEntityModel } from '../Model/IEntityModel';
 export interface IDarkenginesAdminProps {
 	models: IEntityModel[];
 	selectedModel: IEntityModel;
-	comeetGrid: Promise<IDarkenginesGridProps>;
+	darkenginesGrid: Promise<IDarkenginesGridProps>;
 	deleteItem?: unknown;
 }

@@ -1,3 +1,4 @@
+import { IEntityModel } from './Model/IEntityModel';
 import { retrocycle } from './Serialization/JsonNetDecycle';
 
 const rawSchemaSample = [
@@ -15910,6 +15911,6 @@ const rawSchemaSample = [
 		$ref: '1525',
 	},
 ];
-const schemaSample = retrocycle(rawSchemaSample);
+const schemaSample = retrocycle(rawSchemaSample) as IEntityModel[];
 
 export { schemaSample };

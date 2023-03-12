@@ -14,7 +14,7 @@ import { IOrder } from '../Orders/IOrder';
 import { IDarkenginesAdminProps } from './IDarkenginesAdminProps';
 
 export function getBaseQuery(model: IEntityModel) {
-	let query = `${model.name}.Query`;
+	let query = `${model.name}`;
 	query = applyIncludes(query, model);
 	return query;
 }
@@ -27,7 +27,7 @@ export async function setSelectedRepository(
 	darkenginesAdmin: IDarkenginesAdminProps,
 	model: IEntityModel,
 	columnFactories: IColumnFactory[]
-) {
+): Promise<IDarkenginesAdminProps> {
 	const result = await columnFactories
 		.find((columnFactory) => columnFactory.canHandle(model))
 		.createColumns(columnFactories, model);
@@ -61,7 +61,7 @@ export async function setSelectedRepository(
 	});
 	return {
 		...darkenginesAdmin,
-		selectedRepository: model,
+		selectedModel: model,
 		darkenginesGrid: darkenginesGrid,
 	};
 }

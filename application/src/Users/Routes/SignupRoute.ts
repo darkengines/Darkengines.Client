@@ -35,7 +35,7 @@ export class SignupRoute implements IRoute, ISignupRoute {
 				throw 'Not implemented';
 			},
 			goToSignIn(props) {
-				runtimeRoot.children.loginRouteNode.execute();
+				runtimeRoot.children.anonymous.children.loginRouteNode.execute();
 				return props;
 			},
 			signUp(props) {

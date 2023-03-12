@@ -13,6 +13,9 @@ export default class DarkenginesSelect extends Select {
 				.mdc-select--outlined .mdc-select__anchor {
 					padding: 0;
 				}
+				.mdc-select__selected-text-container {
+					padding: 0 var(--content-padding);
+				}
 			`,
 		];
 	}
@@ -53,7 +56,9 @@ export default class DarkenginesSelect extends Select {
 					${this.outlined ? this.renderOutline() : this.renderLabel()}
 					${this.renderLeadingIcon()}
 					<span class="mdc-select__selected-text-container">
-						<span class="mdc-select__selected-text"><slot name="value"></slot></span>
+						<span class="mdc-select__selected-text"
+							><slot name="value">${this.value}</slot></span
+						>
 					</span>
 					<span class="mdc-select__dropdown-icon">
 						<svg

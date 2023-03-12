@@ -10,7 +10,7 @@ import '@drk/src/Components/DarkenginesLightTextfield/DarkenginesLightTextfield'
 import '@drk/src/Components/DarkenginesButton/DarkenginesButton';
 import { DarkenginesLightTextfield } from '@drk/src/Components/DarkenginesLightTextfield/DarkenginesLightTextfield';
 import { Dictionary } from 'ts-essentials';
-import { defaultHeader, form, signUpFooter } from '../Common/Common';
+import { defaultHeader, form, signUpFooter } from '../../../Common/Common';
 import { DarkenginesButton } from '@drk/src/Components/DarkenginesButton/DarkenginesButton';
 
 export interface ILoginProps {

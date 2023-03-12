@@ -64,7 +64,7 @@ export default class DarkenginesAdmin extends LitElement {
 	}
 	render() {
 		return html`<div id="header">
-				<mwc-select
+				<drk-select
 					id="modelSelect"
 					outlined
 					label="{Model}"
@@ -91,18 +91,18 @@ export default class DarkenginesAdmin extends LitElement {
 							>
 						`
 					)}
-				</mwc-select>
-				<mwc-button
+				</drk-select>
+				<drk-button
 					id="addButton"
 					@click=${(e: MouseEvent) => this.adminActions.add(this.adminProps)}
-					>${msg('Add')}</mwc-button
+					>${msg('Add')}</drk-button
 				>
 			</div>
 			${until(this.renderGrid(), 'Loading...')} `;
 	}
 
 	async renderGrid() {
-		const gridProps = await this.adminProps.comeetGrid;
+		const gridProps = await this.adminProps.darkenginesGrid;
 		const actions: IDarkenginesGridActions = {
 			setFilter: async (grid, filter) =>
 				await this.adminActions.setFilter(

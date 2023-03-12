@@ -1,5 +1,5 @@
 const Grid = {
-    IColumnFactory: Symbol.for('IColumnFactory')
-}
+	IColumnFactory: Symbol.for('IColumnFactory'),
+};
 
-export default Grid;
+export { Grid };

@@ -4,7 +4,7 @@ import config from '../config/appsettings.config.json';
 setConfig(config);
 
 import { Routing } from '@drk/src';
-import { getCurrentPath, IRuntimeRoute, makeMiddleware } from '@drk/src/routing';
+import { getCurrentPath, IRuntimeRoute, makeMiddleware, makeNamespace } from '@drk/src/routing';
 import { inject, injectable } from 'inversify';
 import { html, render } from 'lit';
 import { until } from 'lit/directives/until.js';
@@ -20,17 +20,23 @@ import { serviceCollection } from './inversify.config';
 import { LOCALE_STATUS_EVENT } from '@lit/localize';
 import { IDesignerRoute } from './Designer/Routes/DesignerRoute';
 import { DesignerRouteInterfaces } from './Designer/Routes/Interfaces';
+import { IIndexRoute } from './Users/Routes/IndexRoute';
+import { authentication } from '@drk/src/Authentication/Authentication';
 
 const loginRoute = serviceCollection.get<ILoginRoute>(UserRouteInterfaces.ILoginRoute);
 const designerRoute = serviceCollection.get<IDesignerRoute>(DesignerRouteInterfaces.IDesignerRoute);
 const signupRoute = serviceCollection.get<ISignupRoute>(UserRouteInterfaces.ISignupRoute);
+const indexRoute = serviceCollection.get<IIndexRoute>(UserRouteInterfaces.IIndexRoute);
 const passwordResetRequestRoute = serviceCollection.get<IPasswordResetRequestRoute>(
 	UserRouteInterfaces.IPasswordResetRequestRoute
 );
 const passwordResetRoute = serviceCollection.get<IPasswordResetRoute>(
 	UserRouteInterfaces.IPasswordResetRoute
 );
-
+const indexRouteNode = Routing.makeRoute({
+	path: '/',
+	route: indexRoute,
+});
 const loginRouteNode = Routing.makeRoute({
 	path: '/login',
 	route: loginRoute,
@@ -52,7 +58,7 @@ const designerRouteNode = Routing.makeRoute({
 	route: designerRoute,
 });
 
-const rootNode = makeMiddleware(
+const anonymousNode = makeMiddleware(
 	'/',
 	{
 		handler: (context, next) => next(),
@@ -66,6 +72,26 @@ const rootNode = makeMiddleware(
 		designerRouteNode,
 	}
 );
+const authenticatedNode = makeMiddleware(
+	'/',
+	{
+		handler: (context, next) => {
+			if (authentication.state.idToken) {
+				return next();
+			} else {
+				return runtimeRoot.children.anonymous.children.loginRouteNode.execute();
+			}
+		},
+		display: () => html`Home`,
+	},
+	{
+		indexRouteNode
+	}
+);
+const rootNode = makeNamespace({
+	anonymous: anonymousNode,
+	authenticated: authenticatedNode
+})
 export const runtimeRoot = Routing.buildNode(rootNode);
 
 const routes = Routing.getRoutes(runtimeRoot);

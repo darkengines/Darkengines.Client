@@ -14,7 +14,7 @@ import { interfaces } from 'drk/src/Model/Interfaces';
 export default class EntityModelColumnFactory extends ColumnFactory<IEntityModel> {
 	protected resourceFactories: IModelResourceFactory[];
 	constructor(
-		@multiInject(interfaces.IModelResourceFactory) resourceFactories: IModelResourceFactory[]
+		@multiInject(interfaces.IModelResourceFactory) resourceFactories?: IModelResourceFactory[]
 	) {
 		super();
 		this.resourceFactories = resourceFactories;
@@ -48,7 +48,7 @@ export default class EntityModelColumnFactory extends ColumnFactory<IEntityModel
 					.map((result) => result.filter)
 					.map((filter) => filter.buildExpression(parameterExpression, args))
 					.filter((expression) => expression !== undefined);
-				if (!head) return undefined;
+				if (head == undefined) return undefined;
 				const expression = tail.reduce(
 					(expression, subExpression) => ({
 						type: 'LogicalExpression',

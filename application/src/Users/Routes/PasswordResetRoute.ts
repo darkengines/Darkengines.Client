@@ -37,7 +37,7 @@ export class PasswordResetRoute implements IRoute, IPasswordResetRoute {
 				throw 'not implemented';
 			},
 			goToSignup: (props) => {
-				runtimeRoot.children.signupRouteNode.execute();
+				runtimeRoot.children.anonymous.children.signupRouteNode.execute();
 				return props;
 			},
 		};

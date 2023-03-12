@@ -16,7 +16,7 @@ import { customElement, property, query } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { Dictionary } from 'ts-essentials';
 import { validateEmailAddress, validateLogin } from '../../validators';
-import { defaultHeader, form, signInFooter } from '../Common/Common';
+import { defaultHeader, form, signInFooter } from '../../../Common/Common';
 import './Signup.css';
 
 export interface ISignUpValidationState extends Dictionary<IPropertyValidationState> {

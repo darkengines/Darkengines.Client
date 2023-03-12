@@ -1,15 +1,17 @@
+@import '@material/button/dist/mdc.button.css';
+@import '@material/typography/dist/mdc.typography.css';
+@import '@material/elevation/dist/mdc.elevation.css';
+@import '@material/textfield/dist/mdc.textfield.css';
+
+* {
+	box-sizing: border-box;
+}
 .mdc-text-field {
 	width: 100%;
 }
-:host {
-	display: grid;
-	grid-template-columns: 1fr;
-	grid-template-rows: auto;
-	grid-gap: var(--content-spacing);
-	justify-items: center;
-	padding: var(--content-padding);
-	width: 100%;
-	max-width: 100%;
+menu {
+	padding: 0;
+	margin: 0;
 }
 .form {
 	display: grid;
@@ -18,10 +20,10 @@
 	background-color: var(--surface-background-color);
 	border-radius: var(--border-radius);
 	width: 100%;
-	max-width: 420px;
+	max-width: 512px;
 	margin: var(--content-padding) auto var(--content-padding) auto;
 }
-.head {
+.form .head {
 	display: grid;
 	padding: 0 var(--content-padding);
 	grid-auto-flow: column;
@@ -29,11 +31,11 @@
 	align-items: center;
 	justify-content: start;
 }
-.head svg {
+.form .head svg {
 	width: 64px;
 	height: 64px;
 }
-.body {
+.form .body {
 	padding: 0 var(--content-padding);
 	display: grid;
 	grid-gap: var(--content-spacing);
@@ -43,7 +45,7 @@
 	color: var(--error-color);
 	--mdc-theme-text-primary-on-background: var(--error-color);
 }
-.footer {
+.form .footer {
 	border-top: dashed 1px var(--border-color);
 	padding: var(--content-padding) var(--content-padding) 0 var(--content-padding);
 	grid-auto-flow: column;
@@ -60,7 +62,7 @@
 	justify-content: end;
 	justify-items: end;
 }
-.submit {
+.form .submit {
 	justify-self: end;
 }
 .forgotPassword {
@@ -76,4 +78,7 @@
 .action-report .report {
 }
 .action-report .action {
+}
+.surface {
+	background-color: var(--surface-background-color);
 }

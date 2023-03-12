@@ -11,7 +11,7 @@ import { ICollectionModel } from '../../Model/ICollectionModel';
 import { SelectedDetail } from '@material/mwc-list';
 import { repeat } from 'lit/directives/repeat.js';
 import { IModel } from '../../Model/IModel';
-import '../../../Common/Components/Select/Select';
+import '../../Components/DarkenginesSelect/DarkenginesSelect';
 import { ILocalization } from '../../Localization/Models/ILocalization';
 
 export interface ILocalizedEditorProps
@@ -112,8 +112,7 @@ class LocalizedEditor extends LitElement {
 						{
 							value: this.props.value?.find(
 								(localization) =>
-									localization.twoLetterISOLanguageName ==
-									this.selectedLanguage
+									localization.twoLetterISOLanguageName == this.selectedLanguage
 							)?.[this.props.property.name],
 							model: this.props.property,
 							component: undefined,

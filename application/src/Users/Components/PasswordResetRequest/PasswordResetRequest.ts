@@ -5,7 +5,7 @@ import { IPropertyValidationState } from '@drk/src/Validation/ValidationState';
 import { msg } from '@lit/localize';
 import { css, html, LitElement } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
-import { defaultHeader, form, signInFooter } from '../Common/Common';
+import { defaultHeader, form, signInFooter } from '../../../Common/Common';
 import './PasswordResetRequest.css';
 
 export interface IPasswordResetRequestValidationState {

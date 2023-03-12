@@ -3,4 +3,5 @@ export const UserRouteInterfaces = {
 	ISignupRoute: Symbol.for('ISignupRoute'),
 	IPasswordResetRequestRoute: Symbol.for('IPasswordResetRequestRoute'),
 	IPasswordResetRoute: Symbol.for('ILoginRoutIPasswordReseteRoute'),
+	IIndexRoute: Symbol.for('IIndexRoute'),
 };

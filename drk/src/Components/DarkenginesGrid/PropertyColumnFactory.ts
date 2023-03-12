@@ -66,12 +66,10 @@ export default class PropertyColumnFactory implements ColumnFactory<IPropertyMod
 						name: property.name,
 					},
 				};
-				return (
-					args[property.name].args &&
-					args[property.name].operator.buildExpression(
-						memberExpression,
-						args[property.name].args
-					)
+				if (args[property.name].args === undefined) return undefined;
+				return args[property.name].operator.buildExpression(
+					memberExpression,
+					args[property.name].args
 				);
 			},
 			args: { [property.name]: { args: undefined, operator: property.operators[0] } },

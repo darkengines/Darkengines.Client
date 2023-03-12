@@ -29,7 +29,7 @@ export class PasswordResetRequestRoute implements IRoute, IPasswordResetRequestR
 		};
 		const actions: IPasswordResetRequestActions = {
 			goToSignIn: (props: IPasswordResetRequestProps) => {
-				runtimeRoot.children.loginRouteNode.execute();
+				runtimeRoot.children.anonymous.children.loginRouteNode.execute();
 				return props;
 			},
 		};

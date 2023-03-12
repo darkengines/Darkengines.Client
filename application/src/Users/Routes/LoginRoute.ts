@@ -33,7 +33,7 @@ export class LoginRoute implements IRoute, ILoginRoute {
 		let login: Login;
 		const actions: ILoginActions = {
 			goToPasswordResetRequest: (props: ILoginProps) => {
-				runtimeRoot.children.passwordResetRequestRouteNode.execute();
+				runtimeRoot.children.anonymous.children.passwordResetRequestRouteNode.execute();
 				return props;
 			},
 			signIn: async (props: ILoginProps) => {
@@ -42,7 +42,7 @@ export class LoginRoute implements IRoute, ILoginRoute {
 				return props;
 			},
 			goToSignup: (props: ILoginProps) => {
-				runtimeRoot.children.signupRouteNode.execute();
+				runtimeRoot.children.anonymous.children.signupRouteNode.execute();
 				return props;
 			},
 		};

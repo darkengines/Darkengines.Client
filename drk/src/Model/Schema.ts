@@ -36,9 +36,9 @@ export default class Schema {
 		});
 	}
 	protected async fetchModel() {
-		// const query = await queryProvider.query<IEntityModel[]>('ModelProvider.EntityModels');
-		// const models = await query.execute();
-		const models = schemaSample;
+		const query = await queryProvider.query<IEntityModel[]>('ModelProvider.EntityModels');
+		const models = await query.execute();
+		//const models = schemaSample;
 
 		let model = models.toDictionary(
 			(model) => model.name,

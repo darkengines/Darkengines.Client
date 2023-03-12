@@ -12,7 +12,7 @@ import {
 	IValidationState,
 	validate,
 } from '@drk/src/Validation/ValidationState';
-import { defaultHeader, form, signUpFooter } from '../Common/Common';
+import { defaultHeader, form, signUpFooter } from '../../../Common/Common';
 import { DarkenginesButton } from '@drk/src/Components/DarkenginesButton/DarkenginesButton';
 
 export interface IPasswordResetProps {
