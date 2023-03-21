@@ -103,3 +103,9 @@ export default class DarkenginesSelect extends Select {
 			${this.renderHelperText()}`;
 	}
 }
+
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-select': DarkenginesSelect;
+	}
+}

@@ -84,9 +84,14 @@ let validators = {
 	},
 };
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-password-reset': PasswordReset;
+	}
+}
 @customElement('drk-password-reset')
 export class PasswordReset extends LitElement {
-	@property()
+@property()
 	public props: IPasswordResetProps;
 	public actions: IPasswordResetActions;
 	@property()

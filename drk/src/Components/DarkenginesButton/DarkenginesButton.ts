@@ -7,9 +7,14 @@ import '@material/mwc-icon/mwc-icon';
 import oval from './oval.svg';
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-button': DarkenginesButton;
+	}
+}
 @customElement('drk-button')
 export class DarkenginesButton extends Button {
-	@property({ type: Boolean })
+@property({ type: Boolean })
 	public hasLoader: boolean;
 	@property({ type: Boolean })
 	public set isLoading(isLoading: boolean) {

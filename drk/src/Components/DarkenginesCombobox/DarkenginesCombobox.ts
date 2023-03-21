@@ -18,9 +18,14 @@ export interface IDarkenginesComboboxActions<T> {
 	renderAutoCompleteTemplate: <T>(value: T) => TemplateResult;
 }
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-combobox': DarkenginesCombobox;
+	}
+}
 @customElement('drk-combobox')
-export default class DarkenginesCombobox extends LitElement {
-	@property({ type: Object })
+export class DarkenginesCombobox extends LitElement {
+@property({ type: Object })
 	protected _props: IDarkenginesComboboxProps<unknown>;
 	@property({ type: Boolean })
 	protected open: boolean;

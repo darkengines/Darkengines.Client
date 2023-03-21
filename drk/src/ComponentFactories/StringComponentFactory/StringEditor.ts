@@ -6,9 +6,14 @@ import { DarkenginesTextfield } from '../../Components/DarkenginesTextfield/Dark
 import { IPropertyModel } from '../../Model/IPropertyModel';
 import { IEditorComponentActions, IEditorComponentProps } from '../IComponentFactory';
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-string-editor': StringEditor;
+	}
+}
 @customElement('drk-string-editor')
 export class StringEditor extends LitElement {
-	@property({ type: String })
+@property({ type: String })
 	label: string;
 	@property({ type: Object })
 	public props: IEditorComponentProps<IPropertyModel, string>;

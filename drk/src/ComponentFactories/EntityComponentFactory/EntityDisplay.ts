@@ -4,9 +4,14 @@ import { repeat } from 'lit/directives/repeat.js';
 import { IEntityModel } from '../../Model/IEntityModel';
 import { IComponentProps } from '../IComponentFactory';
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-entity-display': EntityDisplay;
+	}
+}
 @customElement('drk-entity-display')
 export class EntityDisplay extends LitElement {
-	@property({ attribute: false })
+@property({ attribute: false })
 	props: IComponentProps<IEntityModel, object>;
 	public static get styles() {
 		return css`

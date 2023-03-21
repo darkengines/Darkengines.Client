@@ -9,9 +9,14 @@ import { customElement, property, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { mwcTextfieldStyles } from '../../Styles/Material';;
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-multi-select': DarkenginesMultiSelect;
+	}
+}
 @customElement('drk-multi-select')
 export class DarkenginesMultiSelect extends LitElement {
-	@query('#input')
+@query('#input')
 	protected input: HTMLInputElement;
 	@query('#menuSurface')
 	protected menuSurface: MenuSurface;

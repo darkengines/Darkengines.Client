@@ -2,9 +2,14 @@ import { css, html, LitElement } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import '@material/mwc-icon-button/mwc-icon-button';
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-chip': DarkenginesChip;
+	}
+}
 @customElement('drk-chip')
 export class DarkenginesChip extends LitElement {
-	public static get styles() {
+public static get styles() {
 		return [
 			css`
 				:host {

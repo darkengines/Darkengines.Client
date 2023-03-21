@@ -8,9 +8,14 @@ import { IPropertyModel } from '../../Model/IPropertyModel';
 import { IEditorComponentProps, IEditorComponentActions } from '../IComponentFactory';
 import { DarkenginesTextfield } from '../../Components/DarkenginesTextfield/DarkenginesTextfield';
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-date-time-editor': DateTimeEditor;
+	}
+}
 @customElement('drk-date-time-editor')
 export class DateTimeEditor extends LitElement implements IValidatable {
-	@property({ type: Object })
+@property({ type: Object })
 	public props: IEditorComponentProps<IPropertyModel, Date | string, TextField>;
 	public actions: IEditorComponentActions<IPropertyModel, Date>;
 	@query('drk-textfield')

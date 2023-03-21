@@ -2,9 +2,14 @@ import { Menu } from '@material/mwc-menu';
 import { html } from 'lit-element';
 import { customElement } from 'lit/decorators.js';
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-drop-down': DropDown;
+	}
+}
 @customElement('drk-drop-down')
-export default class DropDown extends Menu {
-	public static get styles() {
+export class DropDown extends Menu {
+public static get styles() {
 		return Menu.styles;
 	}
 

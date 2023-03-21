@@ -11,10 +11,9 @@ import { until } from 'lit/directives/until.js';
 import { IDarkenginesAdminActions } from '../../Grid/IDarkenginesAdminActions';
 import { IDarkenginesAdminProps } from '../../Grid/IDarkenginesAdminProps';
 import '../../Data/StringExtensions';
-import DarkenginesGrid from '../DarkenginesGrid/DarkenginesGrid';
-import {
-	IDarkenginesGridActions
-} from '../DarkenginesGrid/IDarkenginesGrid';
+import { DarkenginesGrid } from '../DarkenginesGrid/DarkenginesGrid';
+import { IDarkenginesGridActions } from '../DarkenginesGrid/IDarkenginesGrid';
+import '../DarkenginesSelect/DarkenginesSelect';
 
 @customElement('drk-admin')
 export default class DarkenginesAdmin extends LitElement {
@@ -71,11 +70,10 @@ export default class DarkenginesAdmin extends LitElement {
 					@selected=${async (e: CustomEvent<SelectedDetail<number>>) => {
 						const repository = this.adminProps.models[e.detail.index];
 						if (repository && repository !== this.adminProps.selectedModel) {
-							const comeetAdminProps =
-								await this.adminActions.setSelectedModel(
-									this.adminProps,
-									repository
-								);
+							const comeetAdminProps = await this.adminActions.setSelectedModel(
+								this.adminProps,
+								repository
+							);
 							if (comeetAdminProps) this.adminProps = comeetAdminProps;
 						}
 					}}
@@ -105,17 +103,9 @@ export default class DarkenginesAdmin extends LitElement {
 		const gridProps = await this.adminProps.darkenginesGrid;
 		const actions: IDarkenginesGridActions = {
 			setFilter: async (grid, filter) =>
-				await this.adminActions.setFilter(
-					grid,
-					this.adminProps.selectedModel,
-					filter
-				),
+				await this.adminActions.setFilter(grid, this.adminProps.selectedModel, filter),
 			setOrder: async (grid, order) =>
-				await this.adminActions.setOrder(
-					grid,
-					this.adminProps.selectedModel,
-					order
-				),
+				await this.adminActions.setOrder(grid, this.adminProps.selectedModel, order),
 			setPagination: async (grid, pagination) =>
 				await this.adminActions.setPagination(
 					grid,
@@ -137,10 +127,7 @@ export default class DarkenginesAdmin extends LitElement {
 						html`Delete item
 							<b
 								>${this.adminProps.selectedModel.summaryProperties
-									.map(
-										(property) =>
-											this.adminProps.deleteItem?.[property.name]
-									)
+									.map((property) => this.adminProps.deleteItem?.[property.name])
 									.join(',')}</b
 							>?`,
 						{ id: 'Admin.deleteMessage' }

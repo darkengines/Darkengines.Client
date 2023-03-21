@@ -18,9 +18,14 @@ import IDarkenginesGridLayout from './IDarkenginesGridLayout';
 //import { scrollbarStyle } from '../../Theme/scrollbar';
 import { msg } from '@lit/localize';
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-grid': DarkenginesGrid;
+	}
+}
 @customElement('drk-grid')
-export default class DarkenginesGrid extends LitElement {
-	@property({ attribute: false })
+export class DarkenginesGrid extends LitElement {
+@property({ attribute: false })
 	public darkenginesGridProps: IDarkenginesGridProps;
 	public darkenginesGridActions: IDarkenginesGridActions;
 	@property({ type: Object })

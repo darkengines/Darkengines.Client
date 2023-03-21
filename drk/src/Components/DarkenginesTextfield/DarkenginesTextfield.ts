@@ -16,9 +16,14 @@ export function addHasRemoveClass(element: HTMLElement) {
 		hasClass: (className: string) => element.classList.contains(className),
 	};
 }
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-textfield': DarkenginesTextfield;
+	}
+}
 @customElement('drk-textfield')
 export class DarkenginesTextfield extends TextField {
-	public static formatDate(value: string | Date): string {
+public static formatDate(value: string | Date): string {
 		if (typeof value == 'string') value = new Date(value);
 		if (value instanceof Date) {
 			if (isNaN(value.getTime())) {

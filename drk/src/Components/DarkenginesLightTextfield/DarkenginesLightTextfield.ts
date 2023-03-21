@@ -19,9 +19,14 @@ export function addHasRemoveClass(element: HTMLElement) {
 		hasClass: (className: string) => element.classList.contains(className),
 	};
 }
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-light-textfield': DarkenginesLightTextfield;
+	}
+}
 @customElement('drk-light-textfield')
 export class DarkenginesLightTextfield extends LitElement {
-	@property({ type: String })
+@property({ type: String })
 	public label: string;
 	@property({ type: String })
 	public placeholder: string;

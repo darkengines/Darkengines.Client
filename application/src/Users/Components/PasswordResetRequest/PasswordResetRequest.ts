@@ -28,9 +28,14 @@ export interface IPasswordResetRequestActions {
 	goToSignIn: (props: IPasswordResetRequestProps) => IPasswordResetRequestProps;
 }
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-password-reset-request': PasswordResetRequest;
+	}
+}
 @customElement('drk-password-reset-request')
 export class PasswordResetRequest extends LitElement {
-	@property({ type: String })
+@property({ type: String })
 	public props: IPasswordResetRequestProps;
 	public actions: IPasswordResetRequestActions;
 	@query('#submit')

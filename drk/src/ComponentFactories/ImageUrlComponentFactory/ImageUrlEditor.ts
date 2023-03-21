@@ -11,9 +11,14 @@ import { classMap } from 'lit/directives/class-map.js';
 import { IPropertyModel } from '../../Model/IPropertyModel';
 import { IEditorComponentActions, IEditorComponentProps } from '../IComponentFactory';
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-image-url-editor': ImageUrlEditor;
+	}
+}
 @customElement('drk-image-url-editor')
 export class ImageUrlEditor extends LitElement {
-	@property({ type: Object })
+@property({ type: Object })
 	public props: IEditorComponentProps<IPropertyModel, string>;
 	public actions: IEditorComponentActions<IPropertyModel, string>;
 	@property({ type: Boolean })

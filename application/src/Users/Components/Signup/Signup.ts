@@ -130,13 +130,18 @@ let validators = {
 
 export interface ISignupActions {
 	goToGcu: (props: ISignupProps) => ISignupProps;
-	signUp: (props: ISignupProps) => ISignupProps;
+	signUp: (props: ISignupProps) => Promise<ISignupProps>;
 	goToSignIn: (props: ISignupProps) => ISignupProps;
 }
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-signup': Signup;
+	}
+}
 @customElement('drk-signup')
 export class Signup extends LitElement {
-	@property()
+@property()
 	props: ISignupProps;
 	actions: ISignupActions;
 	@property()

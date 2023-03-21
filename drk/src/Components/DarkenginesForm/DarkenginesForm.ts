@@ -5,9 +5,14 @@ import '@material/mwc-button';
 import '../../ComponentFactories/EntityComponentFactory/DarkenginesEntityEditor';
 import { IFormActions, IFormField, IFormProps } from '../Forms';
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-form': DarkenginesForm;
+	}
+}
 @customElement('drk-form')
-export default class DarkenginesForm extends LitElement {
-	@property({ type: Object })
+export class DarkenginesForm extends LitElement {
+@property({ type: Object })
 	public darkenginesAdminProps: IFormProps;
 	@property({ type: Object })
 	public darkenginesAdminActions: IFormActions;

@@ -4,9 +4,14 @@ import { TextField } from '@material/mwc-textfield';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-notched-outlined': DarkenginesNotchedOutlined;
+	}
+}
 @customElement('drk-notched-outlined')
-export default class DarkenginesNotchedOutlined extends LitElement {
-	@property({ type: Boolean })
+export class DarkenginesNotchedOutlined extends LitElement {
+@property({ type: Boolean })
 	public hasFocus: boolean = false;
 	@property({ type: String })
 	public label: string;

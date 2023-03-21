@@ -8,7 +8,8 @@ import { repeat } from 'lit/directives/repeat.js';
 import { IFieldFactoryContext } from '../../Components/DarkenginesForm/IFieldFactory';
 import { DarkenginesGridAction } from '../../Components/DarkenginesGrid/DarkenginesGridAction';
 import { IFilter } from '../../Components/DarkenginesGrid/IDarkenginesGrid';
-import DarkenginesSearchMenu, {
+import {
+	DarkenginesSearchMenu,
 	IDarkenginesSearchMenuProps,
 } from '../../Components/DarkenginesSearchMenu/DarkenginesSearchMenu';
 import { IFormProps, IFormActions } from '../../Components/Forms';
@@ -33,9 +34,14 @@ export interface IReferenceEditorActions extends IEditorComponentActions<IRefere
 	referenceChanged: (props: IReferenceEditorProps) => IReferenceEditorProps;
 }
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-reference-editor': ReferenceEditor;
+	}
+}
 @customElement('drk-reference-editor')
-export default class ReferenceEditor extends LitElement {
-	@property({ type: Object })
+export class ReferenceEditor extends LitElement {
+@property({ type: Object })
 	public props: IReferenceEditorProps;
 	public actions: IReferenceEditorActions;
 	@property({ attribute: false })

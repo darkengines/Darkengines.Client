@@ -3,9 +3,14 @@ import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { mdcElevation, mdcTypography } from '../../Styles/Material';
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-header': DarkenginesHeader;
+	}
+}
 @customElement('drk-header')
 export class DarkenginesHeader extends LitElement {
-	@property({ type: Boolean })
+@property({ type: Boolean })
 	public compact: boolean;
 
 	public static get styles() {

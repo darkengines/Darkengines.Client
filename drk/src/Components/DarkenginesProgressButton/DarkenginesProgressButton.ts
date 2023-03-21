@@ -5,9 +5,14 @@ import { Button } from '@material/mwc-button';
 import '../DarkenginesLoader/DarkenginesLoader';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { unsafeCSS } from 'lit';
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-progress-button': DarkenginesProgressButton;
+	}
+}
 @customElement('drk-progress-button')
-export default class DarkenginesProgressButton extends ButtonBase {
-	@property({ type: Boolean })
+export class DarkenginesProgressButton extends ButtonBase {
+@property({ type: Boolean })
 	public inProgress: boolean;
 
 	public static get styles() {

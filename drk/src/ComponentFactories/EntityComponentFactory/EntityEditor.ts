@@ -13,9 +13,14 @@ export interface IEntityEditorProps extends IEditorComponentProps<IEntityModel, 
 	fields: IFormField[];
 }
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-entity-editor': EntityEditor;
+	}
+}
 @customElement('drk-entity-editor')
-export default class EntityEditor extends LitElement {
-	@property({ type: Object })
+export class EntityEditor extends LitElement {
+@property({ type: Object })
 	public props: IEntityEditorProps;
 	public actions: IEditorComponentActions<IPropertyModel, object>;
 	public static get styles() {

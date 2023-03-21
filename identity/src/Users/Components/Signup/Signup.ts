@@ -134,9 +134,14 @@ export interface ISignupActions {
 	goToSignIn: (props: ISignupProps) => ISignupProps;
 }
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-signup': Signup;
+	}
+}
 @customElement('drk-signup')
 export class Signup extends LitElement {
-	@property()
+@property()
 	props: ISignupProps;
 	actions: ISignupActions;
 	@property()

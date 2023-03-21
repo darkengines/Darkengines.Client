@@ -5,9 +5,14 @@ import { getLocale } from '../../Localization/Localization';
 import { IPropertyModel } from '../../Model/IPropertyModel';
 import { IEditorComponentActions, IEditorComponentProps } from '../IComponentFactory';
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-html-editor': HtmlEditor;
+	}
+}
 @customElement('drk-html-editor')
-export default class HtmlEditor extends LitElement {
-	@property({ type: Object })
+export class HtmlEditor extends LitElement {
+@property({ type: Object })
 	public props: IEditorComponentProps<IPropertyModel, string>;
 	public actions: IEditorComponentActions<IPropertyModel, string>;
 	@property({ type: Boolean })

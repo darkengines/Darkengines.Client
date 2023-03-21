@@ -36,7 +36,11 @@ import '@drk/src/Components/DarkenginesGrid/DarkenginesGrid';
 export interface IDashboardProps {
 	models: Dictionary<IEntityModel>;
 }
-
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-dashboard': Dashboard;
+	}
+}
 @customElement('drk-dashboard')
 export class Dashboard extends LitElement {
 	@property({ type: Object })

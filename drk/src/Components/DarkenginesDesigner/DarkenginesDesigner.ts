@@ -68,9 +68,14 @@ export interface StuffContext {
 	edges: Edge[];
 }
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-designer': Designer;
+	}
+}
 @customElement('drk-designer')
 export class Designer extends LitElement {
-	protected static createSlotElement(positionType: SlotPositionType) {
+protected static createSlotElement(positionType: SlotPositionType) {
 		const slot = document.createElement('div');
 		slot.classList.add('slot');
 		if (positionType == SlotPositionType.Left) slot.classList.add('left');

@@ -16,9 +16,14 @@ export interface IDarkenginesSearchMenuActions {
 	) => Promise<IDarkenginesSearchMenuProps>;
 }
 
+declare global {
+	interface HTMLElementTagNameMap {
+		'drk-search-menu': DarkenginesSearchMenu;
+	}
+}
 @customElement('drk-search-menu')
-export default class DarkenginesSearchMenu extends LitElement {
-	@property({ attribute: false })
+export class DarkenginesSearchMenu extends LitElement {
+@property({ attribute: false })
 	public props: IDarkenginesSearchMenuProps;
 	protected surfaceProps: Partial<MenuSurface>;
 	@property({ type: Object })
