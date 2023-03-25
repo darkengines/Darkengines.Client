@@ -10,7 +10,7 @@ import { Stateful } from '@drk/src/States/Stateful';
 import { runtimeRoot } from '../../Application';
 import { ILoginActions, ILoginProps, Login } from '../Components/Login/Login';
 import { ref } from 'lit/directives/ref.js';
-import { apiClient } from '@drk/src/Api/Client';
+import { apiClient, rawQuery } from '@drk/src/Api/Client';
 
 export interface ILoginRouteState {}
 
@@ -36,6 +36,11 @@ export class LoginRoute implements IRoute, ILoginRoute {
 				return props;
 			},
 			signIn: async (props: ILoginProps) => {
+				const query = apiClient.rawQuery<string>(
+					rawQuery`login(${props.login}, ${props.password})`
+				);
+				console.log(query.code);
+				const result = await query.execute();
 				console.log(`Login(${props.login}, ${props.password})`);
 				await new Promise((resolve, reject) => setTimeout(resolve, 1000));
 				//apiClient.saveOrUpdate();

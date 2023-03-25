@@ -130,7 +130,7 @@ let validators = {
 
 export interface ISignupActions {
 	goToGcu: (props: ISignupProps) => ISignupProps;
-	signUp: (props: ISignupProps) => ISignupProps;
+	signUp: (props: ISignupProps) => Promise<ISignupProps>;
 	goToSignIn: (props: ISignupProps) => ISignupProps;
 }
 

@@ -3,7 +3,7 @@ import { b64utoutf8, KJUR } from 'jsrsasign';
 import IIdentity from './IIdentity';
 import publicKeyString from '!raw-loader!../../../public.pem';
 import { IAuthenticationState } from './IAuthenticationState';
-import { queryProvider } from '../Api/QueryProvider';
+import { queryProvider, rawQuery } from '../Api/QueryProvider';
 
 export class Authentication {
 	public static extractPayload(jwt: string): IIdentity {
@@ -49,10 +49,32 @@ const authentication = Stateful.create(authenticationState, {
 		localStorage?.removeItem(Authentication.name);
 		return initialState;
 	},
+	create: async (state, login: string, emailAddress: string, password: string) => {
+		try {
+			const idToken = await queryProvider
+				.query<string>(
+					rawQuery`Authentication.Create(${login}, ${emailAddress}, ${password})`
+				)
+				.execute();
+			const identity = Authentication.extractPayload(idToken);
+			authenticationState = { ...authenticationState, idToken, identity, error: undefined };
+			if (localStorage) {
+				Authentication.saveState(authenticationState);
+			}
+		} catch (error) {
+			authenticationState = {
+				...authenticationState,
+				identity: undefined,
+				idToken: undefined,
+				error,
+			};
+		}
+		return authenticationState;
+	},
 	authenticate: async (state, emailAddress: string, password: string) => {
 		try {
 			const idToken = await queryProvider
-				.query<string>(`Authentication.Login('${emailAddress}', '${password}')`)
+				.query<string>(rawQuery`Authentication.Login(${emailAddress}, ${password})`)
 				.execute();
 			const identity = Authentication.extractPayload(idToken);
 			authenticationState = { ...authenticationState, idToken, identity, error: undefined };

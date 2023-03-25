@@ -5,7 +5,8 @@ import Queryable from '../Expressions/Queryable';
 import { IEntityModel } from '../Model/IEntityModel';
 import { decycle } from '../Serialization/JsonNetDecycle';
 import { queryProvider } from './QueryProvider';
-import { DeepPartial } from 'ts-essentials';
+import { AnyArray, DeepPartial, Head } from 'ts-essentials';
+import { isTaggedTemplateExpression } from 'typescript';
 
 export class Client {
 	public async saveOrUpdate<TEntity extends object>(
@@ -31,6 +32,10 @@ export class Client {
 		const modelName = typeof model == 'string' ? model : model.name;
 		const queryString = `${modelName}.Query`;
 		const query = queryProvider.queryAuthenticated<TEntity[]>(queryString);
+		return query;
+	}
+	public rawQuery<TResult>(rawQuery: string): Queryable<TResult> {
+		const query = queryProvider.queryAuthenticated<TResult>(rawQuery);
 		return query;
 	}
 }

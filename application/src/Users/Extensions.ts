@@ -1,6 +1,7 @@
 import { apiClient, Client } from '@drk/src/Api/Client';
 import { queryExecutor } from '@drk/src/Api/QueryExecutor';
 import { queryProvider } from '@drk/src/Api/QueryProvider';
+import IQueryable from '@drk/src/Expressions/IQueryable';
 import { lambda } from '@drk/src/Expressions/LambdaExpression';
 import { Container } from 'inversify';
 import { IndexRoute } from './Routes/IndexRoute';
@@ -33,6 +34,7 @@ declare module '@drk/src/Api/Client' {
 }
 
 Client.prototype.login = async function (emailAddress: string, password: string): Promise<string> {
-	//const l = lambda({emailAddress, password}, scope => () => login(scope.emailAddress, password)).lambdaSource
+	const login: (login: string, password: string) => void = null;
+	const query = lambda({emailAddress, password}, scope => () => login(scope.emailAddress, password)).lambdaSource;
 	return await Promise.resolve('');
 };

@@ -12,6 +12,7 @@ import { ISignup, ISignupActions, ISignupProps } from '../Components/Signup/Sign
 import { apiClient } from '@drk/src/Api/Client';
 import { IUser, UserModelName } from '../Models/IUser';
 import Schema from '@drk/src/Model/Schema';
+import { authentication } from '@drk/src/Authentication/Authentication';
 
 export interface ISignupRoute {
 	handler: (_: Routing.IRouteContext) => any;
@@ -45,10 +46,16 @@ export class SignupRoute implements IRoute, ISignupRoute {
 				return props;
 			},
 			signUp: async (props) => {
-				const result = await apiClient.saveOrUpdate<IUser>(UserModelName, {
-					userEmailAddresses: [{ emailAddress: props.emailAddress }],
-					password: props.password,
-				});
+				try {
+					const result = await authentication.actions.create(
+						props.login,
+						props.emailAddress,
+						props.password
+					);
+				} catch (exception) {
+					props = { ...props, lastError: exception };
+				}
+				props = { ...props, loading: false };
 				return props;
 			},
 		};

@@ -9,6 +9,7 @@ import { msg } from '@lit/localize';
 import { Stateful } from '@drk/src/States/Stateful';
 import { runtimeRoot } from '../../Application';
 import { ISignup, ISignupActions, ISignupProps } from '../Components/Signup/Signup';
+import { authentication } from '@drk/src/Authentication/Authentication';
 
 export interface ISignupRoute {
 	handler: (_: Routing.IRouteContext) => any;
@@ -38,8 +39,18 @@ export class SignupRoute implements IRoute, ISignupRoute {
 				runtimeRoot.children.loginRouteNode.execute();
 				return props;
 			},
-			signUp(props) {
-				throw 'Not implemented';
+			async signUp(props) {
+				try {
+					const result = await authentication.actions.create(
+						props.login,
+						props.emailAddress,
+						props.password
+					);
+				} catch (exception) {
+					props = { ...props, lastError: exception };
+				}
+				props = { ...props, loading: false };
+				return props;
 			},
 		};
 		return html`<drk-signup .props=${props} .actions=${actions}></drk-signup>`;
