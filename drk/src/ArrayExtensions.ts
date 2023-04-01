@@ -22,6 +22,7 @@ declare global {
 			equalityComparer: (item: T, valueItem: TValue) => boolean,
 			converter: (value: TValue) => T
 		);
+		set<T>(this: Array<T>, predicate: (item: T) => boolean, selector: (item: T) => T);
 	}
 }
 Array.prototype.where = function where<T>(this: Array<T>, predicate: (x: T) => boolean): Array<T> {
@@ -114,4 +115,17 @@ Array.prototype.toDictionary = function toDictionary<T, TValue = T>(
 			[keySelector(head)]: valueSelector(head),
 		}
 	);
+};
+Array.prototype.set = function set<T>(
+	this: Array<T>,
+	predicate: (item: T) => boolean,
+	selector: (item: T) => T
+) {
+	return this.reduce((a, item, index) => {
+		if (predicate(item)) {
+			if (a === this) a = [...a];
+			a[index] = selector(item);
+		}
+		return a;
+	}, this);
 };

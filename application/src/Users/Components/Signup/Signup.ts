@@ -141,7 +141,7 @@ declare global {
 }
 @customElement('drk-signup')
 export class Signup extends LitElement {
-@property()
+	@property()
 	props: ISignupProps;
 	actions: ISignupActions;
 	@property()
@@ -289,12 +289,12 @@ export class Signup extends LitElement {
 		if (isValid(this.validationState)) {
 			try {
 				this.props.loading = true;
-				await this.actions.signUp(this.props);
+				this.props = await this.actions.signUp(this.props);
 			} catch (error) {
 				this.errorSnackbar.show();
 				this.lastError = error;
 			} finally {
-				this.props.loading = false;
+				this.props = { ...this.props, loading: false };
 			}
 		}
 	}

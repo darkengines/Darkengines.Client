@@ -1,4 +1,5 @@
 import { Dictionary } from 'lodash';
+import { IColumnFactory } from '../Components/DarkenginesGrid/IColumnFactory';
 import {
 	IDarkenginesGridProps,
 	IFilterOperator,
@@ -9,7 +10,7 @@ import { IOrder } from '../Orders/IOrder';
 import { IDarkenginesAdminProps } from './IDarkenginesAdminProps';
 
 export interface IDarkenginesAdminActions {
-	setSelectedModel: (
+	setModel: (
 		comeetAdmin: IDarkenginesAdminProps,
 		model: IEntityModel
 	) => Promise<IDarkenginesAdminProps>;

@@ -3,7 +3,7 @@ import { IEntityModel } from '../Model/IEntityModel';
 
 export interface IDarkenginesAdminProps {
 	models: IEntityModel[];
-	selectedModel: IEntityModel;
+	model: IEntityModel;
 	darkenginesGrid: Promise<IDarkenginesGridProps>;
 	deleteItem?: unknown;
 }

@@ -10,7 +10,7 @@ import {
 import { parseScript, Syntax, parseModule } from 'esprima';
 import { generate } from 'escodegen';
 import { ScopedLambda } from './LambdaExpression';
-import IQueryable from './IQueryable';
+import IQueryable, { IQueryExecutionResult } from './IQueryable';
 import { decycle } from '../Serialization/JsonNetDecycle';
 import { IQueryExecutor } from '../Api/QueryExecutor';
 
@@ -34,6 +34,17 @@ export default class Queryable<T> implements IQueryable<T> {
 		} else {
 			this.expression = expression;
 		}
+	}
+	public async executeMonitored(options: any): Promise<IQueryExecutionResult<T>> {
+		const startedOn = Date.now();
+		const value = await this.execute(options);
+		const duration = Date.now() - startedOn;
+		return {
+			value,
+			report: {
+				duration,
+			},
+		};
 	}
 	public get code(): string {
 		return generate(this.expression, { format: { escapeless: true } });

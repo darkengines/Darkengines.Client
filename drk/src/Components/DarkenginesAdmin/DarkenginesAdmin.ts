@@ -69,10 +69,10 @@ export default class DarkenginesAdmin extends LitElement {
 					label="{Model}"
 					@selected=${async (e: CustomEvent<SelectedDetail<number>>) => {
 						const repository = this.adminProps.models[e.detail.index];
-						if (repository && repository !== this.adminProps.selectedModel) {
-							const comeetAdminProps = await this.adminActions.setSelectedModel(
+						if (repository && repository !== this.adminProps.model) {
+							const comeetAdminProps = await this.adminActions.setModel(
 								this.adminProps,
-								repository
+								repository,
 							);
 							if (comeetAdminProps) this.adminProps = comeetAdminProps;
 						}
@@ -84,7 +84,7 @@ export default class DarkenginesAdmin extends LitElement {
 						(model) => html`
 							<mwc-list-item
 								value=${model.name}
-								?selected=${this.adminProps.selectedModel === model}
+								?selected=${this.adminProps.model === model}
 								>${model.displayName}</mwc-list-item
 							>
 						`
@@ -103,13 +103,13 @@ export default class DarkenginesAdmin extends LitElement {
 		const gridProps = await this.adminProps.darkenginesGrid;
 		const actions: IDarkenginesGridActions = {
 			setFilter: async (grid, filter) =>
-				await this.adminActions.setFilter(grid, this.adminProps.selectedModel, filter),
+				await this.adminActions.setFilter(grid, this.adminProps.model, filter),
 			setOrder: async (grid, order) =>
-				await this.adminActions.setOrder(grid, this.adminProps.selectedModel, order),
+				await this.adminActions.setOrder(grid, this.adminProps.model, order),
 			setPagination: async (grid, pagination) =>
 				await this.adminActions.setPagination(
 					grid,
-					this.adminProps.selectedModel,
+					this.adminProps.model,
 					pagination
 				),
 			edit: async (item) => this.adminActions.edit(item),
@@ -126,7 +126,7 @@ export default class DarkenginesAdmin extends LitElement {
 					${msg(
 						html`Delete item
 							<b
-								>${this.adminProps.selectedModel.summaryProperties
+								>${this.adminProps.model.summaryProperties
 									.map((property) => this.adminProps.deleteItem?.[property.name])
 									.join(',')}</b
 							>?`,

@@ -26,11 +26,11 @@ export class Client {
 		const query = queryProvider.queryAuthenticated<TEntity>(queryString);
 		return await query.execute();
 	}
-	public query<TEntity>(string: IEntityModel): Queryable<TEntity[]>;
+	public query<TEntity>(string: string): Queryable<TEntity[]>;
 	public query<TEntity>(model: IEntityModel): Queryable<TEntity[]>;
 	public query<TEntity>(model: IEntityModel | string): Queryable<TEntity[]> {
 		const modelName = typeof model == 'string' ? model : model.name;
-		const queryString = `${modelName}.Query`;
+		const queryString = `${modelName}`;
 		const query = queryProvider.queryAuthenticated<TEntity[]>(queryString);
 		return query;
 	}

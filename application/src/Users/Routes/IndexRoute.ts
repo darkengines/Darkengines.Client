@@ -14,12 +14,7 @@ import { apiClient } from '@drk/src/Api/Client';
 import { authentication } from '@drk/src/Authentication/Authentication';
 import '../../Dashboard/Dashboard';
 import Schema from '@drk/src/Model/Schema';
-import {
-	setFilter,
-	setOrder,
-	setPagination,
-	setSelectedRepository as setSelectedModel,
-} from '@drk/src/Grid/Grid';
+import { setFilter, setOrder, setPagination, setModel } from '@drk/src/Grid/Grid';
 import { Grid } from '@drk/src/Components/DarkenginesGrid/Grid';
 import { IDarkenginesAdminProps } from '@drk/src/Grid/IDarkenginesAdminProps';
 import { multiInject } from 'inversify';
@@ -52,19 +47,18 @@ export class IndexRoute implements IRoute, IIndexRoute {
 		const selectedModel = models['User'];
 		let state: IDarkenginesAdminProps = {
 			models: Object.values(models).sort((a, b) => a.name.localeCompare(b.name)),
-			selectedModel,
+			model: selectedModel,
 			darkenginesGrid: undefined,
 		};
-		state = await setSelectedModel(state, selectedModel, this.columnFactories);
+		state = await setModel(state, selectedModel, this.columnFactories);
 
 		const actions: IDarkenginesAdminActions = {
-			setSelectedModel: async (admin: IDarkenginesAdminProps, model: IEntityModel) => {
-				//onModelChanged(model);
-				return admin;
-			},
 			setFilter,
 			setOrder,
 			setPagination,
+			setModel: async (darkenginesAdmin: IDarkenginesAdminProps, model: IEntityModel) => {
+				return await setModel(darkenginesAdmin, model, this.columnFactories);
+			},
 			edit: async (item) => console.log('edit'),
 			add: async () => console.log('add'),
 			delete: async (props) => {
@@ -76,6 +70,7 @@ export class IndexRoute implements IRoute, IIndexRoute {
 		return html`<drk-dashboard
 			.props=${{
 				models,
+				selectedModel
 			}}
 			.adminProps=${state}
 			.adminActions=${actions}

@@ -74,6 +74,8 @@ export class DarkenginesGrid extends LitElement {
 					overflow-x: auto;
 					max-height: 100%;
 					max-width: 100%;
+					min-height: 100%;
+					background-color: var(--background-color);
 				}
 				#head {
 					position: sticky;
@@ -81,10 +83,11 @@ export class DarkenginesGrid extends LitElement {
 					cursor: pointer;
 					z-index: 2;
 					box-shadow: rgb(0 0 0 / 38%) 0px 0px 4px 0px;
-					background-color: white;
+					background-color: var(--surface-background-color);
 				}
 				#body {
 					z-index: 1;
+					background-color: var(--surface-background-color);
 				}
 				#body .column:not(.actions) .cell:nth-child(2n) {
 					background-color: rgb(245 245 250);
@@ -123,7 +126,7 @@ export class DarkenginesGrid extends LitElement {
 					position: sticky;
 					right: 0px;
 					cursor: pointer;
-					background-color: var(--background-color);
+					background-color: var(--surface-background-color);
 					border-left: 1px solid rgba(0, 0, 0, 0.38);
 					box-shadow: rgb(0 0 0 / 38%) 0px 0px 4px 0px;
 				}

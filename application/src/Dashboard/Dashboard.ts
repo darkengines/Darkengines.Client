@@ -49,12 +49,6 @@ export class Dashboard extends LitElement {
 	public props: IDashboardProps;
 	@query('.mdc-button')
 	protected buttons: HTMLElement[];
-	@state()
-	protected state: {
-		selectedModel?: IEntityModel;
-	} = {
-		selectedModel: undefined,
-	};
 	public static get styles() {
 		return [
 			unsafeCSS(commonCss),
@@ -64,6 +58,8 @@ export class Dashboard extends LitElement {
 			mdcButton,
 			css`
 				:host {
+					max-height: 100%;
+					height: 100%;
 					display: block;
 				}
 				.application {
@@ -71,6 +67,9 @@ export class Dashboard extends LitElement {
 					grid:
 						'nav header' min-content
 						'nav content' 1fr / auto 1fr;
+					max-height: 100%;
+					height: 100%;
+					align-content: start;
 				}
 				#navbar {
 					display: grid;
@@ -85,6 +84,9 @@ export class Dashboard extends LitElement {
 				#content {
 					grid-area: content;
 					position: relative;
+					max-height: 100%;
+					height: 100%;
+					min-height: 100%;
 				}
 				#content main {
 				}
@@ -124,6 +126,13 @@ export class Dashboard extends LitElement {
 					background-color: var(--surface-background-color);
 					justify-content: start;
 					padding: var(--content-padding);
+					overflow-y: auto;
+					max-height: 100%;
+					height: 100%;
+					gap: var(--content-spacing);
+				}
+				#selected-model {
+					justify-self: start;
 				}
 			`,
 		];
@@ -158,17 +167,22 @@ export class Dashboard extends LitElement {
 			</header>
 			<div id="content">
 				<main>
-					<drk-select outlined label="Item" .value=${this.state.selectedModel?.name}>
+					<drk-select
+						outlined
+						id="selected-model"
+						label="Item"
+						.value=${this.adminProps.model?.name}
+					>
 						${repeat(Object.values(this.props.models), (model) => {
 							return html` <mwc-list-item
-								.value=${model.name}
-								@click=${(e: MouseEvent) => {
-									this.state = {
-										...this.state,
-										selectedModel: model,
-									};
+								.value=${this.adminProps.model.name}
+								@click=${async (e: MouseEvent) => {
+									this.adminProps = await this.adminActions.setModel(
+										this.adminProps,
+										model
+									);
 								}}
-								?selected=${model == this.state.selectedModel}
+								?selected=${model == this.adminProps.model}
 								>${model.name}</mwc-list-item
 							>`;
 						})}
@@ -180,23 +194,21 @@ export class Dashboard extends LitElement {
 	}
 	async renderGrid() {
 		const gridProps = await this.adminProps.darkenginesGrid;
+		gridProps.model = this.adminProps.model;
 		const actions: IDarkenginesGridActions = {
 			setFilter: async (grid, filter) =>
-				await this.adminActions.setFilter(grid, this.adminProps.selectedModel, filter),
+				await this.adminActions.setFilter(grid, this.adminProps.model, filter),
 			setOrder: async (grid, order) =>
-				await this.adminActions.setOrder(grid, this.adminProps.selectedModel, order),
+				await this.adminActions.setOrder(grid, this.adminProps.model, order),
 			setPagination: async (grid, pagination) =>
-				await this.adminActions.setPagination(
-					grid,
-					this.adminProps.selectedModel,
-					pagination
-				),
+				await this.adminActions.setPagination(grid, this.adminProps.model, pagination),
 			edit: async (item) => this.adminActions.edit(item),
 			delete: async (item) => {
 				this.adminProps = { ...this.adminProps, deleteItem: item };
 			},
 		};
 		return html`<drk-grid
+				style="height: 512px;"
 				.darkenginesGridProps=${gridProps}
 				.darkenginesGridActions=${actions}
 			></drk-grid>
@@ -205,7 +217,7 @@ export class Dashboard extends LitElement {
 					${msg(
 						html`Delete item
 							<b
-								>${this.adminProps.selectedModel.summaryProperties
+								>${this.adminProps.model.summaryProperties
 									.map((property) => this.adminProps.deleteItem?.[property.name])
 									.join(',')}</b
 							>?`,

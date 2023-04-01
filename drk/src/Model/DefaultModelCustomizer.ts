@@ -56,6 +56,7 @@ export default class DefaultModelCustomizer implements IModelCustomizer {
 		model.getValue = (instance) => instance;
 		model.setValue = (instance, value) => value;
 		model.modelType = 'EntityModel';
+		if (!model.summaryProperties) model.summaryProperties = [];
 
 		model.componentFactories = this.componentFactories.filter((cf) => cf.canHandle(model));
 		model.operators = this.operators.filter((operator) =>

@@ -22,8 +22,16 @@ import { IDesignerRoute } from './Designer/Routes/DesignerRoute';
 import { DesignerRouteInterfaces } from './Designer/Routes/Interfaces';
 import { IIndexRoute } from './Users/Routes/IndexRoute';
 import { authentication } from '@drk/src/Authentication/Authentication';
+import { IEmailVerificationRoute } from './Users/Routes/EmailVerificationRoute';
+import { IEmailVerificationRequestRoute } from './Users/Routes/EmailVerificationRequestRoute';
 
 const loginRoute = serviceCollection.get<ILoginRoute>(UserRouteInterfaces.ILoginRoute);
+const emailVerificationRoute = serviceCollection.get<IEmailVerificationRoute>(
+	UserRouteInterfaces.IEmailVerificationRoute
+);
+const emailVerificationRequestRoute = serviceCollection.get<IEmailVerificationRequestRoute>(
+	UserRouteInterfaces.IEmailVerificationRequestRoute
+);
 const designerRoute = serviceCollection.get<IDesignerRoute>(DesignerRouteInterfaces.IDesignerRoute);
 const signupRoute = serviceCollection.get<ISignupRoute>(UserRouteInterfaces.ISignupRoute);
 const indexRoute = serviceCollection.get<IIndexRoute>(UserRouteInterfaces.IIndexRoute);
@@ -40,6 +48,14 @@ const indexRouteNode = Routing.makeRoute({
 const loginRouteNode = Routing.makeRoute({
 	path: '/login',
 	route: loginRoute,
+});
+const emailVerificationRouteNode = Routing.makeRoute({
+	path: '/verify/:guid',
+	route: emailVerificationRoute,
+});
+const emailVerificationRequestRouteNode = Routing.makeRoute({
+	path: '/verify',
+	route: emailVerificationRequestRoute,
 });
 const signupRouteNode = Routing.makeRoute({
 	path: '/signup',
@@ -66,6 +82,8 @@ const anonymousNode = makeMiddleware(
 	},
 	{
 		loginRouteNode,
+		emailVerificationRouteNode,
+		emailVerificationRequestRouteNode,
 		signupRouteNode,
 		passwordResetRequestRouteNode,
 		passwordResetRouteNode,
@@ -85,13 +103,13 @@ const authenticatedNode = makeMiddleware(
 		display: () => html`Home`,
 	},
 	{
-		indexRouteNode
+		indexRouteNode,
 	}
 );
 const rootNode = makeNamespace({
 	anonymous: anonymousNode,
-	authenticated: authenticatedNode
-})
+	authenticated: authenticatedNode,
+});
 export const runtimeRoot = Routing.buildNode(rootNode);
 
 const routes = Routing.getRoutes(runtimeRoot);

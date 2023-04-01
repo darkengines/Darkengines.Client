@@ -71,6 +71,23 @@ const authentication = Stateful.create(authenticationState, {
 		}
 		return authenticationState;
 	},
+	verify: async (state, guid: string) => {
+		const idToken = await queryProvider
+			.query<string>(rawQuery`Authentication.VerifyAsync(${guid})`)
+			.execute();
+		const identity = Authentication.extractPayload(idToken);
+		authenticationState = { ...authenticationState, idToken, identity, error: undefined };
+		if (localStorage) {
+			Authentication.saveState(authenticationState);
+		}
+		return authenticationState;
+	},
+	requestEmailAddressVerification: async (state, hashedEmailAddress: string) => {
+		await queryProvider
+			.query<void>(rawQuery`Authentication.RequestUserEmailAddressVerificationAsync(${hashedEmailAddress})`)
+			.execute();
+		return state;
+	},
 	authenticate: async (state, emailAddress: string, password: string) => {
 		try {
 			const idToken = await queryProvider

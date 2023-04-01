@@ -4,6 +4,8 @@ import { queryProvider } from '@drk/src/Api/QueryProvider';
 import IQueryable from '@drk/src/Expressions/IQueryable';
 import { lambda } from '@drk/src/Expressions/LambdaExpression';
 import { Container } from 'inversify';
+import { EmailVerificationRequestRoute } from './Routes/EmailVerificationRequestRoute';
+import { EmailVerificationRoute } from './Routes/EmailVerificationRoute';
 import { IndexRoute } from './Routes/IndexRoute';
 import { UserRouteInterfaces } from './Routes/Interfaces';
 import { LoginRoute } from './Routes/LoginRoute';
@@ -20,6 +22,12 @@ Container.prototype.addUsers = function (): Container {
 	this.bind(UserRouteInterfaces.IIndexRoute).to(IndexRoute).inSingletonScope();
 	this.bind(UserRouteInterfaces.ILoginRoute).to(LoginRoute).inSingletonScope();
 	this.bind(UserRouteInterfaces.ISignupRoute).to(SignupRoute).inSingletonScope();
+	this.bind(UserRouteInterfaces.IEmailVerificationRoute)
+		.to(EmailVerificationRoute)
+		.inSingletonScope();
+	this.bind(UserRouteInterfaces.IEmailVerificationRequestRoute)
+		.to(EmailVerificationRequestRoute)
+		.inSingletonScope();
 	this.bind(UserRouteInterfaces.IPasswordResetRequestRoute)
 		.to(PasswordResetRequestRoute)
 		.inSingletonScope();
@@ -35,6 +43,9 @@ declare module '@drk/src/Api/Client' {
 
 Client.prototype.login = async function (emailAddress: string, password: string): Promise<string> {
 	const login: (login: string, password: string) => void = null;
-	const query = lambda({emailAddress, password}, scope => () => login(scope.emailAddress, password)).lambdaSource;
+	const query = lambda(
+		{ emailAddress, password },
+		(scope) => () => login(scope.emailAddress, password)
+	).lambdaSource;
 	return await Promise.resolve('');
 };

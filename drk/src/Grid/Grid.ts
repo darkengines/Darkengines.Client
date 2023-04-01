@@ -5,9 +5,11 @@ import { queryProvider } from '../Api/QueryProvider';
 import { DarkenginesGridAction } from '../Components/DarkenginesGrid/DarkenginesGridAction';
 import { IColumnFactory } from '../Components/DarkenginesGrid/IColumnFactory';
 import {
-	IDarkenginesGridProps, IFilter, IFilterOperator,
+	IDarkenginesGridProps,
+	IFilter,
+	IFilterOperator,
 	IPagination,
-	Order
+	Order,
 } from '../Components/DarkenginesGrid/IDarkenginesGrid';
 import { IEntityModel } from '../Model/IEntityModel';
 import { IOrder } from '../Orders/IOrder';
@@ -23,7 +25,7 @@ export function getCountQuery(baseQuery: string) {
 	return `${baseQuery}.Count()`;
 }
 
-export async function setSelectedRepository(
+export async function setModel(
 	darkenginesAdmin: IDarkenginesAdminProps,
 	model: IEntityModel,
 	columnFactories: IColumnFactory[]
@@ -61,8 +63,11 @@ export async function setSelectedRepository(
 	});
 	return {
 		...darkenginesAdmin,
-		selectedModel: model,
-		darkenginesGrid: darkenginesGrid,
+		model: model,
+		darkenginesGrid: Promise.resolve({
+			...(await darkenginesGrid),
+			model,
+		}),
 	};
 }
 export async function feedDarkenginesGrid(
