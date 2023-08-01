@@ -1,0 +1,14 @@
+{
+  "name": "rootr",
+  "version": "0.0.1",
+  "description": "A powerful typed router.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "darkengines.com",
+  "license": "MIT",
+  "dependencies": {
+		"ts-essentials": "^9.3.0"
+	}
+}

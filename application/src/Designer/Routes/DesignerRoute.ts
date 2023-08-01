@@ -9,6 +9,7 @@ import { ref } from 'lit/directives/ref.js';
 import Schema from '@drk/src/Model/Schema';
 import { Designer } from '@drk/src/Components/DarkenginesDesigner/DarkenginesDesigner';
 import '@drk/src/Components/DarkenginesDesigner/DarkenginesDesigner';
+import { schemaSample } from '@drk/src/schema_sample';
 
 export interface IDesignerRouteState {}
 
@@ -25,7 +26,8 @@ export class DesignerRoute implements IRoute, IDesignerRoute {
 	public displayName: any = msg('Designer', { id: 'designerDisplayName' });
 	public async handler(_: Routing.IRouteContext) {
 		let designer: Designer;
-		const schema = await this.schema.model;
+		//const schema = await this.schema.model;
+		const schema = schemaSample;
 		const models = Object.values(schema);
 		return html`<drk-designer
 			${ref((part: Designer) => {

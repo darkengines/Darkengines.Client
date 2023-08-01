@@ -5,75 +5,50 @@ setConfig(config);
 
 import { Routing } from '@drk/src';
 import { getCurrentPath, IRuntimeRoute, makeMiddleware, makeNamespace } from '@drk/src/routing';
-import { inject, injectable } from 'inversify';
+import { injectable } from 'inversify';
 import { html, render } from 'lit';
 import { until } from 'lit/directives/until.js';
 import 'reflect-metadata';
 import RouteRecognizer from 'route-recognizer';
 import './index.css';
-import { ILoginRoute } from './Users/Routes/LoginRoute';
-import { UserRouteInterfaces } from './Users/Routes/Interfaces';
-import { IPasswordResetRequestRoute } from './Users/Routes/PasswordResetRequestRoute';
-import { IPasswordResetRoute } from './Users/Routes/PasswordResetRoute';
-import { ISignupRoute } from './Users/Routes/SignupRoute';
+import { UserMiddlewareInterfaces } from './Users/Interfaces';
 import { serviceCollection } from './inversify.config';
 import { LOCALE_STATUS_EVENT } from '@lit/localize';
 import { IDesignerRoute } from './Designer/Routes/DesignerRoute';
 import { DesignerRouteInterfaces } from './Designer/Routes/Interfaces';
-import { IIndexRoute } from './Users/Routes/IndexRoute';
-import { authentication } from '@drk/src/Authentication/Authentication';
-import { IEmailVerificationRoute } from './Users/Routes/EmailVerificationRoute';
-import { IEmailVerificationRequestRoute } from './Users/Routes/EmailVerificationRequestRoute';
+import { IAuthenticatedUserMiddleware } from './Users/Middlewares/AuthenticatedUserMiddleware';
+import { IVerifiedUserMiddleware } from './Users/Middlewares/VerifiedUserMiddleware';
+import { IApplicationMiddleware } from './Applications/ApplicationMiddleware';
+import { ApplicationMiddlewareInterfaces } from './Applications/Interfaces';
 
-const loginRoute = serviceCollection.get<ILoginRoute>(UserRouteInterfaces.ILoginRoute);
-const emailVerificationRoute = serviceCollection.get<IEmailVerificationRoute>(
-	UserRouteInterfaces.IEmailVerificationRoute
-);
-const emailVerificationRequestRoute = serviceCollection.get<IEmailVerificationRequestRoute>(
-	UserRouteInterfaces.IEmailVerificationRequestRoute
-);
+import {
+	loginRouteNode,
+	signupRouteNode,
+	passwordResetRequestRouteNode,
+	passwordResetRouteNode,
+	indexRouteNode,
+	emailVerificationRouteNode,
+	emailVerificationRequestRouteNode,
+	userNode,
+} from './Users/routing';
+import { administration } from './Administration/routing';
+
 const designerRoute = serviceCollection.get<IDesignerRoute>(DesignerRouteInterfaces.IDesignerRoute);
-const signupRoute = serviceCollection.get<ISignupRoute>(UserRouteInterfaces.ISignupRoute);
-const indexRoute = serviceCollection.get<IIndexRoute>(UserRouteInterfaces.IIndexRoute);
-const passwordResetRequestRoute = serviceCollection.get<IPasswordResetRequestRoute>(
-	UserRouteInterfaces.IPasswordResetRequestRoute
+
+const authenticatedUserMiddleware = serviceCollection.get<IAuthenticatedUserMiddleware>(
+	UserMiddlewareInterfaces.IAuthenticatedUserMiddleware
 );
-const passwordResetRoute = serviceCollection.get<IPasswordResetRoute>(
-	UserRouteInterfaces.IPasswordResetRoute
+const applicationMiddleware = serviceCollection.get<IApplicationMiddleware>(
+	ApplicationMiddlewareInterfaces.IApplicationMiddleware
 );
-const indexRouteNode = Routing.makeRoute({
-	path: '/',
-	route: indexRoute,
-});
-const loginRouteNode = Routing.makeRoute({
-	path: '/login',
-	route: loginRoute,
-});
-const emailVerificationRouteNode = Routing.makeRoute({
-	path: '/verify/:guid',
-	route: emailVerificationRoute,
-});
-const emailVerificationRequestRouteNode = Routing.makeRoute({
-	path: '/verify',
-	route: emailVerificationRequestRoute,
-});
-const signupRouteNode = Routing.makeRoute({
-	path: '/signup',
-	route: signupRoute,
-});
-const passwordResetRequestRouteNode = Routing.makeRoute({
-	path: '/request-password-reset',
-	route: passwordResetRequestRoute,
-});
-const passwordResetRouteNode = Routing.makeRoute({
-	path: '/password-reset/',
-	route: passwordResetRoute,
-});
+const verifiedUserMiddleware = serviceCollection.get<IVerifiedUserMiddleware>(
+	UserMiddlewareInterfaces.IVerifiedUserMiddleware
+);
+
 const designerRouteNode = Routing.makeRoute({
 	path: '/designer/',
 	route: designerRoute,
 });
-
 const anonymousNode = makeMiddleware(
 	'/',
 	{
@@ -82,30 +57,25 @@ const anonymousNode = makeMiddleware(
 	},
 	{
 		loginRouteNode,
-		emailVerificationRouteNode,
-		emailVerificationRequestRouteNode,
 		signupRouteNode,
 		passwordResetRequestRouteNode,
 		passwordResetRouteNode,
 		designerRouteNode,
 	}
 );
-const authenticatedNode = makeMiddleware(
-	'/',
-	{
-		handler: (context, next) => {
-			if (authentication.state.idToken) {
-				return next();
-			} else {
-				return runtimeRoot.children.anonymous.children.loginRouteNode.execute();
-			}
-		},
-		display: () => html`Home`,
-	},
-	{
-		indexRouteNode,
-	}
-);
+const applicationNode = makeMiddleware('', applicationMiddleware, {
+	indexRouteNode,
+	userNode,
+	administration,
+});
+const verifiedUserNode = makeMiddleware('', verifiedUserMiddleware, {
+	applicationNode,
+});
+const authenticatedNode = makeMiddleware('/', authenticatedUserMiddleware, {
+	verifiedUserNode,
+	emailVerificationRouteNode,
+	emailVerificationRequestRouteNode,
+});
 const rootNode = makeNamespace({
 	anonymous: anonymousNode,
 	authenticated: authenticatedNode,

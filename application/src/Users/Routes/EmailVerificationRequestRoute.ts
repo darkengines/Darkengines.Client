@@ -25,13 +25,13 @@ import { lambda } from '@drk/src/Expressions/LambdaExpression';
 export interface IEmailVerificationRequestRouteState {}
 
 export interface IEmailVerificationRequestRoute {
-	handler: (_: Routing.IRouteContext, guid: string) => any;
+	handler: (_: Routing.IRouteContext) => any;
 }
 
 @injectable()
 export class EmailVerificationRequestRoute implements IRoute, IEmailVerificationRequestRoute {
 	public constructor() {}
-	public async handler(_: Routing.IRouteContext, guid: string) {
+	public async handler(_: Routing.IRouteContext) {
 		const initialState: IEmailVerificationRequestRouteState = {};
 
 		const currentUsers = await apiClient.query<IUser>(UserModelName).include(user => user.userEmailAddresses).where(lambda({userId: authentication.state.identity.id}, scope => user => user.id == scope.userId)).execute();

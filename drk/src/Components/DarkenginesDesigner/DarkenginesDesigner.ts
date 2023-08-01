@@ -1,4 +1,5 @@
 import { msg, str } from '@lit/localize';
+import dagre from 'dagre';
 import { ICollectionModel } from 'drk/src/Model/ICollectionModel';
 import { IEntityModel } from 'drk/src/Model/IEntityModel';
 import { IMember } from 'drk/src/Model/IMember';
@@ -8,11 +9,14 @@ import { IPropertyModel } from 'drk/src/Model/IPropertyModel';
 import { IReferenceModel } from 'drk/src/Model/IReferenceModel';
 import { css, CSSResultGroup, html, LitElement, nothing, PropertyValueMap, svg } from 'lit';
 import { customElement, property, query, queryAll, state } from 'lit/decorators.js';
-import { ref } from 'lit/directives/ref';
+import { ref } from 'lit/directives/ref.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { flatten } from 'lodash';
 import { Dictionary } from 'ts-essentials';
 import { mdcElevation } from '../../Styles/Material/index';
+import { forceCenter, forceManyBody, forceSimulation } from 'd3';
+import ELK, { ElkEdge, ElkExtendedEdge, ElkNode } from 'elkjs';
+import { Func } from 'drk/src/functional';
 
 export interface IDesigner {}
 export interface IPosition {
@@ -56,16 +60,14 @@ export enum SlotPositionType {
 export interface Slot {
 	htmlElement?: HTMLElement;
 	type: SlotPositionType;
-}
-
-export interface Edge {
-	source: Slot[];
-	destination: Slot[];
+	model: IModel;
+	target: any;
+	id: string;
 }
 
 export interface StuffContext {
 	cache: Dictionary<Item>;
-	edges: Edge[];
+	edges: ElkExtendedEdge[];
 }
 
 declare global {
@@ -73,14 +75,77 @@ declare global {
 		'drk-designer': Designer;
 	}
 }
+
+export type ModelConversionContext = {
+	nodes: Dictionary<any>;
+	edges: Dictionary<Dictionary<any>>;
+};
+export type Grouping<TKey, TItem> = { key: TKey; items: Array<TItem> };
+function groupBy<TSource, TKey>(
+	array: Array<TSource>,
+	keySelector: Func<[TSource], TKey>
+): Array<Grouping<TKey, TSource>> {
+	let groups: Array<Grouping<TKey, TSource>> = [];
+	const result = array.reduce((groups, item) => {
+		const key = keySelector(item);
+		let group = groups.find((group) => group.key == key);
+		if (!group) {
+			groups = [...groups, { key, items: [item] }];
+		} else {
+			group.items.push(item);
+		}
+		return groups;
+	}, groups);
+	return result;
+}
+export function modelOrder(left: IEntityModel, right: IEntityModel) {
+	if (left.name < right.name) return -1;
+	return 1;
+}
+export function orderModels(...models: IModel[]) {
+	return models.sort(modelOrder);
+}
+
 @customElement('drk-designer')
 export class Designer extends LitElement {
-protected static createSlotElement(positionType: SlotPositionType) {
+	protected static createSlotElement(positionType: SlotPositionType) {
 		const slot = document.createElement('div');
 		slot.classList.add('slot');
 		if (positionType == SlotPositionType.Left) slot.classList.add('left');
 		if (positionType == SlotPositionType.Right) slot.classList.add('right');
 		return slot;
+	}
+	visitModels(models: IEntityModel[], context?: ModelConversionContext) {
+		if (!context) context = { nodes: {}, edges: {} };
+		for (const model of models) this.visitModel(model, context);
+		return context;
+	}
+	visitModel(model: IEntityModel, context: ModelConversionContext) {
+		let node: ElkNode = context.nodes[model.name];
+		if (node) return node;
+		const item = this.items.find((item) => item.model == model);
+		const nodeRect = item.htmlElement.getBoundingClientRect();
+		context.nodes[model.name] = node = {
+			id: model.name,
+			width: nodeRect.width,
+			height: nodeRect.height
+		};
+		const navigations = [...model.references, ...model.collections] as INavigation[];
+		const typeNavigations = groupBy(navigations, (navigation) => navigation.type);
+		for (const typeNavigation of typeNavigations) {
+			const orderedModels = orderModels(model, typeNavigation.key);
+			let left = context.edges[orderedModels[0].name];
+			if (!left) context.edges[orderedModels[0].name] = left = {};
+			let right = left[orderedModels[1].name];
+			if (!right)
+				left[orderedModels[1].name] = right = {
+					id: `${orderedModels[0].name}_${orderedModels[1].name}`,
+					source: orderedModels[0].name,
+					target: orderedModels[1].name,
+				};
+		}
+		for (const navigation of navigations) this.visitModel(navigation.type, context);
+		return context;
 	}
 	protected doAllStuff(models: IEntityModel[]) {
 		const cache: Dictionary<Item> = {};
@@ -94,17 +159,35 @@ protected static createSlotElement(positionType: SlotPositionType) {
 	protected doStuff(model: IEntityModel, context: StuffContext) {
 		const leftHeaderSlotElement = Designer.createSlotElement(SlotPositionType.Left);
 		const rightHeaderSlotElement = Designer.createSlotElement(SlotPositionType.Right);
-		const leftHeaderSlot = { htmlElement: leftHeaderSlotElement, type: SlotPositionType.Left };
+		const leftHeaderSlot = {
+			htmlElement: leftHeaderSlotElement,
+			type: SlotPositionType.Left,
+			model,
+			target: model,
+			id: `${model.name}`,
+		};
 		const rightHeaderSlot = {
 			htmlElement: rightHeaderSlotElement,
 			type: SlotPositionType.Right,
+			model,
+			target: model,
+			id: `${model.name}`,
 		};
 		const leftFooterSlotElement = Designer.createSlotElement(SlotPositionType.Left);
 		const rightFooterSlotElement = Designer.createSlotElement(SlotPositionType.Right);
-		const leftFooterSlot = { htmlElement: leftFooterSlotElement, type: SlotPositionType.Left };
+		const leftFooterSlot = {
+			htmlElement: leftFooterSlotElement,
+			type: SlotPositionType.Left,
+			model,
+			target: model,
+			id: `${model.name}`,
+		};
 		const rightFooterSlot = {
 			htmlElement: rightFooterSlotElement,
 			type: SlotPositionType.Right,
+			model,
+			target: model,
+			id: `${model.name}`,
 		};
 
 		if (context.cache.hasOwnProperty(model.name)) return context.cache[model.name];
@@ -137,10 +220,16 @@ protected static createSlotElement(positionType: SlotPositionType) {
 				{
 					htmlElement: leftMemberSlotElement,
 					type: SlotPositionType.Left,
+					model,
+					target: reference,
+					id: `${model.name}.${reference.name}`,
 				},
 				{
 					htmlElement: rightMemberSlotElement,
 					type: SlotPositionType.Right,
+					model,
+					target: reference,
+					id: `${model.name}.${reference.name}`,
 				},
 			];
 			const member: ReferenceMember = {
@@ -150,14 +239,6 @@ protected static createSlotElement(positionType: SlotPositionType) {
 			};
 			item.members[reference.name] = item.references[reference.name] = member;
 			member.targetItem = this.doStuff(reference.type, context);
-
-			if (reference.isDependentToPrincipal) {
-				const edge: Edge = {
-					source: slots,
-					destination: member.targetItem.slots.header,
-				};
-				context.edges.push(edge);
-			}
 		});
 
 		model.collections.forEach((collection) => {
@@ -167,10 +248,16 @@ protected static createSlotElement(positionType: SlotPositionType) {
 				{
 					htmlElement: leftMemberSlotElement,
 					type: SlotPositionType.Left,
+					model,
+					target: collection,
+					id: `${model.name}.${collection.name}`,
 				},
 				{
 					htmlElement: rightMemberSlotElement,
 					type: SlotPositionType.Right,
+					model,
+					target: collection,
+					id: `${model.name}.${collection.name}`,
 				},
 			];
 			const member: CollectionMember = {
@@ -180,14 +267,6 @@ protected static createSlotElement(positionType: SlotPositionType) {
 			};
 			item.members[collection.name] = item.collections[collection.name] = member;
 			member.targetItem = this.doStuff(collection.type, context);
-
-			if (collection.isDependentToPrincipal) {
-				const edge: Edge = {
-					source: slots,
-					destination: member.targetItem.slots.header,
-				};
-				context.edges.push(edge);
-			}
 		});
 		return item;
 	}
@@ -275,7 +354,7 @@ protected static createSlotElement(positionType: SlotPositionType) {
 	protected boxElements: NodeListOf<HTMLDivElement>;
 
 	@property({ type: Array })
-	public edges: Edge[] = [];
+	public edges: ElkExtendedEdge[] = [];
 
 	//@property({ type: Object })
 	protected center: { x: number; y: number };
@@ -437,7 +516,56 @@ protected static createSlotElement(positionType: SlotPositionType) {
 		this.plane.style.transform = `translateX(${this.view.center.x}px) translateY(${
 			this.view.center.y
 		}px) translateZ(${-this.view.distance + 1}px)`;
+
+		if (_changedProperties.has('items') && !_changedProperties.get('items')) {
+			await this.updateComplete;
+			await document.fonts.ready
+			requestAnimationFrame(() => {
+				this.elkLayout();
+			});
+		}
 	}
+	async connectedCallback(): Promise<void> {
+		super.connectedCallback();
+	}
+	protected elkLayout() {
+		const graph = this.visitModels(this.models);
+		console.log(graph);
+		const mapSlot = (slot) => {
+			const portRect = slot.htmlElement.getBoundingClientRect();
+			return {
+				x: portRect.x,
+				y: portRect.y,
+			};
+		};
+		const nodes = Object.values(graph.nodes);
+		const edges = flatten(Object.values(graph.edges).map((edges) => Object.values(edges)));
+		const layout = new ELK({
+			defaultLayoutOptions: {
+				//'org.eclipse.elk.spacing.nodeNode': 0 as any,
+				//'org.eclipse.elk.algorithm': 'org.eclipse.elk.sporeOverlap'
+
+			}
+		});
+
+		const root = {
+			id: 'root',
+			children: nodes,
+			edges,
+		};
+		layout.layout(root as any).then((layout) => {
+			console.log(layout);
+			this.edges = edges;
+			this.items = this.items.map((item, index) => {
+				const node = layout.children[index];
+				return {
+					...item,
+					position: { x: node.x, y: node.y },
+				};
+			});
+		});
+	}
+
 	protected getOffset(element: HTMLElement, relativeElement: HTMLElement) {
 		var offset = {
 			x: element.offsetLeft,
@@ -471,7 +599,11 @@ protected static createSlotElement(positionType: SlotPositionType) {
 		const collectionOffset = referenceOffset + item.model.references.length;
 		return html`<div
 			class="box"
+			.data=${item}
 			style="position: absolute; left: ${item.position.x}px; top: ${item.position.y}px"
+			${ref((element: HTMLElement) => {
+				if (element) item.htmlElement = element;
+			})}
 			@mousedown=${(e: MouseEvent) => {
 				const divElement = e.currentTarget as HTMLDivElement;
 				divElement.classList.add('moving');
@@ -507,9 +639,7 @@ protected static createSlotElement(positionType: SlotPositionType) {
 				e.preventDefault();
 			}}
 		>
-			<div class="header">
-				${item.model.name}${repeat(item.slots.header, (slot) => slot.htmlElement)}
-			</div>
+			<div class="header">${item.model.name}</div>
 
 			${this.renderProperties(Object.values(item.properties))}
 			${this.renderReferences(Object.values(item.references))}
@@ -542,23 +672,20 @@ protected static createSlotElement(positionType: SlotPositionType) {
 	public renderProperty(property: PropertyMember) {
 		return html`<div class="member property">
 			<span class="type">${property.member.typeName}</span>&nbsp;${property.member.name}
-			${repeat(property.slots, (slot, index) => slot.htmlElement)}
 		</div>`;
 	}
 	public renderReference(reference: ReferenceMember) {
 		return html`<div class="member reference">
 			<span class="type">${reference.member.type.name}</span>&nbsp;${reference.member.name}
-			${repeat(reference.slots, (slot, index) => slot.htmlElement)}
 		</div>`;
 	}
 	public renderCollection(collection: CollectionMember) {
 		return html`<div class="member collection">
 			<span class="type">ICollection&lt;${collection.member.type.name}&gt;</span
 			>&nbsp;${collection.member.name}
-			${repeat(collection.slots, (slot, index) => slot.htmlElement)}
 		</div>`;
 	}
-	public renderEdges(edges: Edge[]) {
+	public renderEdges(edges: ElkExtendedEdge[]) {
 		return html`<svg
 			fill="transparent"
 			stroke="black"
@@ -582,57 +709,21 @@ protected static createSlotElement(positionType: SlotPositionType) {
 				></path>
 			</marker>
 			${repeat(edges, (edge) => {
-				const destinations = edge.destination.map((destination) => ({
-					offset: this.getOffset(destination.htmlElement, this.plane),
-					destination,
-				}));
-				const sources = edge.source.map((source) => ({
-					offset: this.getOffset(source.htmlElement, this.plane),
-					source,
-				}));
-
-				const paths = flatten(
-					sources.map((source) => {
-						return destinations.map((destination) => ({
-							source,
-							destination,
-						}));
-					})
-				);
-
-				const sortedPaths = paths.sort(
-					(left, right) =>
-						this.squaredDistance(left.source.offset, left.destination.offset) -
-						this.squaredDistance(right.source.offset, right.destination.offset)
-				);
-				const shortestPath = sortedPaths[0];
-				const inputElement = shortestPath.destination.destination.htmlElement;
-				const outputElement = shortestPath.source.source.htmlElement;
-
-				const outputPosition = shortestPath.source.offset;
-				const inputPosition = shortestPath.destination.offset;
-
-				let sourceDirection = { x: -1, y: 0 };
-				if (shortestPath.source.source.type == SlotPositionType.Left) {
-					sourceDirection = { x: -1, y: 0 };
-				}
-				if (shortestPath.source.source.type == SlotPositionType.Right) {
-					sourceDirection = { x: 1, y: 0 };
-				}
-
-                let destinationDirection = { x: -1, y: 0 };
-				if (shortestPath.destination.destination.type == SlotPositionType.Left) {
-					destinationDirection = { x: -1, y: 0 };
-				}
-				if (shortestPath.destination.destination.type == SlotPositionType.Right) {
-					destinationDirection = { x: 1, y: 0 };
-				}
-
-				return svg`<path marker-end="url(#triangle)" d="M${outputPosition.x} ${
-					outputPosition.y
-				} C${outputPosition.x + sourceDirection.x * 64} ${outputPosition.y}, ${
-					inputPosition.x + destinationDirection.x * 64
-				} ${inputPosition.y}, ${inputPosition.x + destinationDirection.x * 16} ${inputPosition.y}">`;
+				if (!edge.sections) return nothing;
+				const startX = edge.sections[0].startPoint.x;
+				const startY = edge.sections[0].startPoint.y;
+				const endX = edge.sections[0].endPoint.x;
+				const endY = edge.sections[0].endPoint.y;
+				const sourceDirection = {
+					x: endX - startX > 0 ? 1 : -1,
+					y: endY - startY > 0 ? 1 : -1,
+				};
+				return svg`<path d="
+					M${startX} ${startY} 
+					C${startX + sourceDirection.x * 64} ${startY}, 
+					${endX + -sourceDirection.x * 64} ${endY}, 
+					${endX} ${endY}
+				">`;
 			})}
 		</svg>`;
 	}

@@ -82,3 +82,19 @@ menu {
 .surface {
 	background-color: var(--surface-background-color);
 }
+.application-menu-item,
+.user-menu-item {
+	width: 100%;
+	position: relative;
+	cursor: pointer;
+	text-align: center;
+	padding: calc(var(--content-padding) / 2) var(--content-padding);
+	user-select: none;
+	color: var(--on-primary-color);
+	background-color: var(--primary-color);
+}
+
+.application-menu-item.selected {
+	background-color: var(--background-color);
+	color: var(--on-background-color);
+}

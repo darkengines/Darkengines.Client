@@ -1,9 +1,12 @@
 import config from '../../config/appsettings.config.json';
-import { html, svg } from 'lit';
+import { css, html, svg, unsafeCSS } from 'lit';
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
 import './Common.css';
 import logo from '../../assets/images/logo.svg';
 import { msg } from '@lit/localize';
+import commonCss from '!raw-loader!./Common.css';
+
+export const commonStyles = unsafeCSS(commonCss);
 
 export function signInFooter<
 	TProps,
