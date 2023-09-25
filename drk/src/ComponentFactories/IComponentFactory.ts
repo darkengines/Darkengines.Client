@@ -25,7 +25,7 @@ export interface IComponentFactory {
 		props: IEditorComponentProps,
 		actions: IEditorComponentActions,
 		component?: (component: any) => void
-	): any;
+	): Promise<any>;
 	filter(
 		props: IEditorComponentProps,
 		actions: IEditorComponentActions,

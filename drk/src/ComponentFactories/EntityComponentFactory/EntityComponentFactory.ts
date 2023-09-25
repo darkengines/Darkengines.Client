@@ -36,8 +36,8 @@ export default class EntityComponentFactory extends ComponentFactory<IEntityMode
 				query = query.where(
 					lambda(
 						{ value: `%${value}%` },
-						(scope) => (item: { displayName: string }) =>
-							item.displayName.like(scope.value)
+						(context) => (item: { displayName: string }) =>
+							item.displayName.like(context.scope.value)
 					)
 				);
 			}

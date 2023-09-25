@@ -19,7 +19,7 @@ export class HtmlComponentFactory extends ComponentFactory<IPropertyModel, strin
 	display(props: IComponentProps<IPropertyModel, string>, actions: IComponentActions) {
 		return html`<drk-html-display .props=${props}></drk-html-display>`;
 	}
-	edit(
+	async edit(
 		props: IEditorComponentProps<IPropertyModel, string>,
 		actions: IEditorComponentActions<IPropertyModel, string>
 	) {

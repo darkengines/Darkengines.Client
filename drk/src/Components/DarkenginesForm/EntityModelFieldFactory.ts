@@ -5,7 +5,7 @@ import FieldFactory from './FieldFactory';
 import { IFieldFactoryContext } from './IFieldFactory';
 
 @injectable()
-export default class EntityModelFieldFactory extends FieldFactory<IEntityModel> {
+export class EntityModelFieldFactory extends FieldFactory<IEntityModel> {
 	canHandle(model: IEntityModel) {
 		return model.modelType == 'EntityModel';
 	}

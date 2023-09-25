@@ -32,6 +32,7 @@ import {
 	userNode,
 } from './Users/routing';
 import { administration } from './Administration/routing';
+import { modelsNode } from './Models/routing';
 
 const designerRoute = serviceCollection.get<IDesignerRoute>(DesignerRouteInterfaces.IDesignerRoute);
 
@@ -67,6 +68,7 @@ const applicationNode = makeMiddleware('', applicationMiddleware, {
 	indexRouteNode,
 	userNode,
 	administration,
+	modelsNode
 });
 const verifiedUserNode = makeMiddleware('', verifiedUserMiddleware, {
 	applicationNode,

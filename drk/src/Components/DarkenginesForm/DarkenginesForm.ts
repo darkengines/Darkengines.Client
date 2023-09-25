@@ -2,8 +2,9 @@ import { customElement, property } from '@lit/reactive-element/decorators.js';
 import { css, html, LitElement, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import '@material/mwc-button';
-import '../../ComponentFactories/EntityComponentFactory/DarkenginesEntityEditor';
+import '../../ComponentFactories/EntityComponentFactory/EntityEditor';
 import { IFormActions, IFormField, IFormProps } from '../Forms';
+import { until } from 'lit/directives/until.js';
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -12,7 +13,7 @@ declare global {
 }
 @customElement('drk-form')
 export class DarkenginesForm extends LitElement {
-@property({ type: Object })
+	@property({ type: Object })
 	public darkenginesAdminProps: IFormProps;
 	@property({ type: Object })
 	public darkenginesAdminActions: IFormActions;
@@ -74,7 +75,8 @@ export class DarkenginesForm extends LitElement {
 						return props;
 					},
 				});
-				return field.componentFactory.edit(props, actions);
+				const editResult = field.componentFactory.edit(props, actions);
+				return until(editResult, nothing);
 			}
 		);
 	}

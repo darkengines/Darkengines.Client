@@ -24,7 +24,7 @@ export class ImageUrlComponentFactory extends ComponentFactory<IPropertyModel, s
 	canHandle(model: IPropertyModel) {
 		return model.displayTypeName == 'ImageUrl';
 	}
-	edit(
+	async edit(
 		props: IEditorComponentProps<IPropertyModel, string>,
 		actions: IEditorComponentActions<IPropertyModel, string>
 	) {

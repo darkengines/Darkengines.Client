@@ -19,8 +19,8 @@ export default class CollectionColumnFactory implements ColumnFactory<ICollectio
 		this.componentFactories = componentFactories;
 		this.defaultComponentFactory = defaultComponentFactory;
 	}
-	canHandle(reference: ICollectionModel) {
-		return reference.modelType === 'CollectionModel';
+	canHandle(collection: ICollectionModel) {
+		return collection.modelType === 'CollectionModel';
 	}
 	async createColumns(
 		columnFactories: IColumnFactory[],

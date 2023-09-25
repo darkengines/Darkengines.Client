@@ -15,7 +15,7 @@ import {
 import { IFormProps, IFormActions } from '../../Components/Forms';
 import { IColumn } from '../../Grid/IColumn';
 import { IReferenceModel } from '../../Model/IReferenceModel';
-import '../../../Common/Components/SearchMenu/SearchMenu';
+import '../../Components/DarkenginesSearchMenu/DarkenginesSearchMenu';
 import { IEditorComponentProps, IEditorComponentActions } from '../IComponentFactory';
 
 export interface IReferenceEditorProps extends IEditorComponentProps<IReferenceModel, object> {

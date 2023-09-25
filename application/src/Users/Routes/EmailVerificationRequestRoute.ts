@@ -34,23 +34,35 @@ export class EmailVerificationRequestRoute implements IRoute, IEmailVerification
 	public async handler(_: Routing.IRouteContext) {
 		const initialState: IEmailVerificationRequestRouteState = {};
 
-		const currentUsers = await apiClient.query<IUser>(UserModelName).include(user => user.userEmailAddresses).where(lambda({userId: authentication.state.identity.id}, scope => user => user.id == scope.userId)).execute();
+		const currentUsers = await apiClient
+			.query<IUser>(UserModelName)
+			.include((user) => user.userEmailAddresses)
+			.where(
+				lambda(
+					{ userId: authentication.state.identity.id },
+					(context) => (user) => user.id == context.scope.userId
+				)
+			)
+			.execute();
 		const currentUser = currentUsers[0];
 
 		const props: IEmailVerificationRequestProps = {
-			userEmailAddresses: currentUser.userEmailAddresses.map(userEmailAddressModel)
+			userEmailAddresses: currentUser.userEmailAddresses.map(userEmailAddressModel),
 		};
-		
+
 		let emailVerification: EmailVerificationRequest;
 		const actions: IEmailVerificationRequestActions = {
 			goToSignup: (props: IEmailVerificationRequestProps) => {
 				runtimeRoot.children.anonymous.children.signupRouteNode.execute();
 				return props;
 			},
-			async requestUserEmailAddressVerification(props: IEmailVerificationRequestProps, hashedEmailAddress: string) {
+			async requestUserEmailAddressVerification(
+				props: IEmailVerificationRequestProps,
+				hashedEmailAddress: string
+			) {
 				await authentication.actions.requestEmailAddressVerification(hashedEmailAddress);
 				return props;
-			}
+			},
 		};
 		const state = Stateful.create(initialState, {});
 		return html`<drk-email-verification-request

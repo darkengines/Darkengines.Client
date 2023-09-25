@@ -15,7 +15,7 @@ import {
 } from '../../ComponentFactories/IComponentFactory';
 import { StringComponentFactory } from '../../ComponentFactories/StringComponentFactory/StringComponentFactory';
 import { getConfig } from '../../config';
-import '../../Data/StringExtensions';
+import '../../StringExtensions';
 import { ICollectionModel } from '../../Model/ICollectionModel';
 import { IPropertyModel } from '../../Model/IPropertyModel';
 import { IFormActions, IFormProps } from '../Forms';

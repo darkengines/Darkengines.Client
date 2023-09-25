@@ -16,7 +16,7 @@ export class DateTimeComponentFactory implements ComponentFactory<IPropertyModel
 	display(props: IComponentProps<IPropertyModel, Date>, _actions: IComponentActions) {
 		return html`<drk-date-time-display .props=${props}></drk-date-time-display>`;
 	}
-	edit(
+	async edit(
 		props: IEditorComponentProps<IPropertyModel, Date>,
 		actions: IEditorComponentActions<IPropertyModel, Date>
 	) {

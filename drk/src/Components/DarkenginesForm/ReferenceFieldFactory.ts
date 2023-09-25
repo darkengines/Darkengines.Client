@@ -15,6 +15,7 @@ import FieldFactory from './FieldFactory';
 import { IFieldFactoryContext } from './IFieldFactory';
 import { IFieldFactoryResult } from './IFieldFactoryResult';
 import { applyFilter, applyIncludes, applyPagination } from '../../Grid/Grid';
+import { apiClient } from 'drk/src/Api/Client';
 
 export interface IReferenceFormField extends IFormField {
 	form: {
@@ -27,10 +28,8 @@ export interface IReferenceFormField extends IFormField {
 
 @injectable()
 export default class ReferenceFieldFactory extends FieldFactory<IReferenceModel> {
-	protected queryExecutor: QueryExecutor;
-	constructor(@inject(QueryExecutor) queryExecutor: QueryExecutor) {
+	constructor() {
 		super();
-		this.queryExecutor = queryExecutor;
 	}
 	canHandle(model: IReferenceModel) {
 		return model.modelType == 'ReferenceModel';
@@ -130,8 +129,7 @@ export default class ReferenceFieldFactory extends FieldFactory<IReferenceModel>
 						count: undefined,
 						pageCount: 1,
 					});
-					const queryable = new Queryable<any[]>(query, this.queryExecutor);
-					const results = await queryable.execute();
+					const results = await apiClient.rawQuery<any[]>(query).execute();
 					const referenceFormField: IReferenceFormField = {
 						...(formProps.fields[reference.name] as IReferenceFormField),
 						filter: props.filter,

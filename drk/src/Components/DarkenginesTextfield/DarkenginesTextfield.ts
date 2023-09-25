@@ -1,9 +1,14 @@
-import { TextField } from '@material/mwc-textfield';
 import { format } from 'date-fns';
-import { css, html, PropertyValues } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, LitElement, nothing, PropertyValues } from 'lit';
+import { customElement, property, query } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { darkenginesTextfieldStyles } from './DarkenginesTextField.Styles';
+import { spread } from '@open-wc/lit-helpers';
+import {
+	TextFieldType,
+	UnsupportedTextFieldType,
+	TextField,
+} from '@material/web/textfield/internal/text-field';
 
 export function addHasRemoveClass(element: HTMLElement) {
 	return {
@@ -22,8 +27,79 @@ declare global {
 	}
 }
 @customElement('drk-textfield')
-export class DarkenginesTextfield extends TextField {
-public static formatDate(value: string | Date): string {
+export class DarkenginesTextfield extends LitElement {
+	@property({ type: String })
+	public set value(v: string) {
+		this.updateComplete.then((_) => {
+			this.editor.value = v;
+		});
+	}
+	public get value(): string {
+		return this.editor?.value;
+	}
+	@property({ type: String })
+	public set title(value: string) {
+		this.updateComplete.then((_) => {
+			this.editor.title = value;
+		});
+	}
+	public get title(): string {
+		return this.editor?.title;
+	}
+	@property({ type: String })
+	public set label(value: string) {
+		this.updateComplete.then((_) => {
+			this.editor.label = value;
+		});
+	}
+	public get label(): string {
+		return this.editor?.label;
+	}
+	@property({ type: String })
+	public set type(value: TextFieldType | UnsupportedTextFieldType) {
+		this.updateComplete.then((_) => {
+			this.editor.type = value;
+		});
+	}
+	public get type(): TextFieldType | UnsupportedTextFieldType {
+		return this.editor?.type;
+	}
+	@property({ type: String })
+	public set errorMessage(value: string) {
+		this.updateComplete.then((_) => {
+			this.editor.error = !!value;
+			this.editor.errorText = value;
+			this.requestUpdate('errorMessage');
+		});
+	}
+	public get errorMessage(): string {
+		return this.editor?.errorText;
+	}
+	@property({ type: Object })
+	get validity(): ValidityState {
+		return this.editor?.validity;
+	}
+	@property({ type: String })
+	get validationMessage(): string {
+		return this.editor?.validationMessage;
+	}
+	@property({ type: Boolean })
+	get willValidate(): boolean {
+		return this.editor?.willValidate;
+	}
+	setCustomValidity(message?: string) {
+		this.updateComplete.then((_) => this.editor.setCustomValidity(message));
+	}
+	checkValidity(): boolean {
+		return this.editor?.checkValidity();
+	}
+	reportValidity(): boolean {
+		return this.editor?.reportValidity();
+	}
+	@property({ type: Boolean })
+	public padding: boolean;
+
+	public static formatDate(value: string | Date): string {
 		if (typeof value == 'string') value = new Date(value);
 		if (value instanceof Date) {
 			if (isNaN(value.getTime())) {
@@ -36,21 +112,25 @@ public static formatDate(value: string | Date): string {
 	}
 	public static get styles() {
 		return [
-			...TextField.styles,
 			darkenginesTextfieldStyles,
 			css`
 				::-webkit-calendar-picker-indicator {
 					display: block !important;
 				}
+				:host {
+					display: inline-block;
+				}
+				#Editor {
+					width: 100%;
+				}
 				#helper-text {
 					white-space: nowrap;
 				}
+				#placeholder {
+					height: 20px;
+				}
 			`,
 		];
-	}
-	protected setValidationMessage(validationMessage?: string) {
-		this.setCustomValidity(validationMessage ?? '');
-		this.reportValidity();
 	}
 	public get valueAsDate(): Date | undefined {
 		let date: Date | undefined = undefined;
@@ -70,15 +150,16 @@ public static formatDate(value: string | Date): string {
 			);
 		}
 	}
-
+	@query('#Editor')
+	protected editor: TextField;
 	update(changedProperties: PropertyValues) {
-		if (changedProperties.has('validationMessage')) {
-			if (this.formElement) {
-				this.setValidationMessage(this.validationMessage);
+		if (changedProperties.has('errorMessage')) {
+			if (this.editor) {
+				this.editor.setCustomValidity(this.errorMessage);
 			} else {
 				this.updateComplete.then((updated) => {
 					if (updated) {
-						this.setValidationMessage(this.validationMessage);
+						this.editor.setCustomValidity(this.errorMessage);
 					}
 				});
 			}
@@ -86,58 +167,30 @@ public static formatDate(value: string | Date): string {
 		super.update(changedProperties);
 	}
 
-	protected getRootAdapterMethods() {
-		return {
-			registerTextFieldInteractionHandler: (evtType: any, handler: any) =>
-				this.addEventListener(evtType, handler),
-			deregisterTextFieldInteractionHandler: (evtType: any, handler: any) =>
-				this.removeEventListener(evtType, handler),
-			registerValidationAttributeChangeHandler: (handler: any) => {
-				const getAttributesList = (mutationsList: MutationRecord[]): string[] => {
-					return mutationsList
-						.map((mutation) => mutation.attributeName)
-						.filter((attributeName) => attributeName) as string[];
-				};
-				const observer = new MutationObserver((mutationsList) => {
-					handler(getAttributesList(mutationsList));
-				});
-				const config = { attributes: true };
-				observer.observe(this.formElement, config);
-				return observer;
-			},
-			deregisterValidationAttributeChangeHandler: (observer: MutationObserver) =>
-				observer.disconnect(),
-			...addHasRemoveClass(this.mdcRoot),
-		};
+	protected onInput(e: InputEvent) {
+		this.dispatchEvent(new InputEvent(e.type, e));
+	}
+
+	protected onChange(e: InputEvent) {
+		this.dispatchEvent(new InputEvent(e.type, e));
+	}
+
+	protected onError(detail: any) {
+		this.dispatchEvent(new CustomEvent('error', { detail }));
 	}
 
 	render() {
-		const shouldRenderCharCounter = this.charCounter && this.maxLength !== -1;
-		const shouldRenderHelperText =
-			this.helperPersistent ||
-			!!this.helper ||
-			!!this.validationMessage ||
-			shouldRenderCharCounter;
-		/** @classMap */
-		const classes = {
-			'mdc-text-field--disabled': this.disabled,
-			'mdc-text-field--no-label': !this.label,
-			'mdc-text-field--filled': !this.outlined,
-			'mdc-text-field--outlined': this.outlined,
-			'mdc-text-field--with-leading-icon': this.icon,
-			'mdc-text-field--with-trailing-icon': this.iconTrailing,
-			'mdc-text-field--end-aligned': this.endAligned,
-			'drk-text-field--invalid':
-				this.validationMessage && this.validationMessage.length,
-		};
-		return html`
-			<label class="mdc-text-field ${classMap(classes)}">
-				${this.renderRipple()} ${this.outlined ? this.renderOutline() : this.renderLabel()}
-				${this.renderLeadingIcon()} ${this.renderPrefix()}
-				${this.renderInput(shouldRenderHelperText)} ${this.renderSuffix()}
-				${this.renderTrailingIcon()} ${this.renderLineRipple()}
-			</label>
-			${this.renderHelperText(shouldRenderHelperText, shouldRenderCharCounter)}
-		`;
+		return html`<md-outlined-text-field
+				id="Editor"
+				part="editor"
+				@input=${this.onInput}
+				@change=${this.onChange}
+			></md-outlined-text-field>
+			${this.renderPlaceholder()}`;
+	}
+
+	protected renderPlaceholder() {
+		if (!this.padding || this.errorMessage) return nothing;
+		return html`<div id="placeholder"></div>`;
 	}
 }

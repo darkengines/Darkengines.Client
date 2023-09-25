@@ -29,7 +29,7 @@ export class AdministrationGrid extends LitElement {
 		return html`${until(this.renderGrid(), html`Loading...`)}`;
 	}
 	public async renderGrid() {
-		const gridProps = await this.adminProps.darkenginesGrid;
+		const gridProps = await this.adminProps.grid;
 		const actions: IDarkenginesGridActions = {
 			setFilter: async (grid, filter) =>
 				await this.adminActions.setFilter(grid, this.adminProps.model, filter),

@@ -4,6 +4,6 @@ import { IEntityModel } from '../Model/IEntityModel';
 export interface IDarkenginesAdminProps {
 	models: IEntityModel[];
 	model: IEntityModel;
-	darkenginesGrid: Promise<IDarkenginesGridProps>;
+	grid: Promise<IDarkenginesGridProps>;
 	deleteItem?: unknown;
 }

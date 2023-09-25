@@ -39,7 +39,7 @@ export class AdministrationGridRoute implements IRoute, IAdministrationGridRoute
 		let state: IDarkenginesAdminProps = {
 			models: Object.values(models).sort((a, b) => a.name.localeCompare(b.name)),
 			model: selectedModel,
-			darkenginesGrid: undefined,
+			grid: undefined,
 		};
 		state = await setModel(state, selectedModel, this.columnFactories);
 

@@ -100,7 +100,7 @@ export default class DarkenginesAdmin extends LitElement {
 	}
 
 	async renderGrid() {
-		const gridProps = await this.adminProps.darkenginesGrid;
+		const gridProps = await this.adminProps.grid;
 		const actions: IDarkenginesGridActions = {
 			setFilter: async (grid, filter) =>
 				await this.adminActions.setFilter(grid, this.adminProps.model, filter),

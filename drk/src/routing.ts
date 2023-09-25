@@ -279,7 +279,7 @@ function getArgs(executionNode: IExecutionNode, args: any[]): any[] {
 	if (executionNode.node instanceof RuntimeMiddleware) {
 		if (executionNode.node.middleware?.middleware?.handler) {
 			const limit = -executionNode.node.middleware.middleware.handler.length + 2;
-			return limit ? getArgs(executionNode.next!, args).slice(0, limit) : args;
+			return limit ? args : getArgs(executionNode.next!, args).slice(0, limit);
 		} else {
 			return getArgs(executionNode.next!, args);
 		}

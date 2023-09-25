@@ -36,7 +36,7 @@ export class LocalizedComponentFactory extends ComponentFactory<ICollectionModel
 	canHandle(collection: ICollectionModel): boolean {
 		return collection.displayTypeName == 'ILocalization';
 	}
-	edit(
+	async edit(
 		props: ILocalizedEditorProps,
 		actions: IEditorComponentActions<ICollectionModel, ILocalization[]>
 	) {

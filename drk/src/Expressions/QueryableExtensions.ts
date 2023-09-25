@@ -117,24 +117,24 @@ declare module './IncludableQueryable' {
 	export default interface IncludableQueryable<TEntity, TPreviousInclude> {
 		thenInclude<TEntity, TProperty, TPreviousInclude>(
 			this: IncludableQueryable<TEntity[], TPreviousInclude[]>,
-			selector: (
-				x: TPreviousInclude
-			) => TProperty | ScopedLambda<(x: TPreviousInclude) => TProperty, any>
+			selector:
+				| ((x: TPreviousInclude) => TProperty)
+				| ScopedLambda<(x: TPreviousInclude) => TProperty, any>
 		): IncludableQueryable<TEntity[], TProperty>;
 		thenInclude<TEntity, TProperty>(
 			this: IncludableQueryable<TEntity[], TPreviousInclude>,
-			selector: (
-				x: TPreviousInclude
-			) => TProperty | ScopedLambda<(x: TPreviousInclude) => TProperty, any>
+			selector:
+				| ((x: TPreviousInclude) => TProperty)
+				| ScopedLambda<(x: TPreviousInclude) => TProperty, any>
 		): IncludableQueryable<TEntity[], TProperty>;
 	}
 }
 
 IncludableQueryable.prototype.thenInclude = function thenInclude<T, TPreviousInclude, TProperty>(
 	this: Queryable<T[]>,
-	selector: (
-		x: TPreviousInclude
-	) => TProperty | ScopedLambda<(x: TPreviousInclude) => TProperty, any>
+	selector:
+		| ((x: TPreviousInclude) => TProperty)
+		| ScopedLambda<(x: TPreviousInclude) => TProperty, any>
 ): IncludableQueryable<T[], TProperty> {
 	const queryable = new IncludableQueryable<T[], TProperty>(
 		Queryable.methodCallExpression(this.expression, 'ThenInclude', selector),
@@ -145,9 +145,9 @@ IncludableQueryable.prototype.thenInclude = function thenInclude<T, TPreviousInc
 };
 IncludableQueryable.prototype.thenInclude = function thenInclude<T, TPreviousInclude, TProperty>(
 	this: IncludableQueryable<T[], TPreviousInclude[]>,
-	selector: (
-		x: TPreviousInclude
-	) => TProperty | ScopedLambda<(x: TPreviousInclude) => TProperty, any>
+	selector:
+		| ((x: TPreviousInclude) => TProperty)
+		| ScopedLambda<(x: TPreviousInclude) => TProperty, any>
 ): IncludableQueryable<T[], TProperty> {
 	const queryable = new IncludableQueryable<T[], TProperty>(
 		Queryable.methodCallExpression(this.expression, 'ThenInclude', selector),

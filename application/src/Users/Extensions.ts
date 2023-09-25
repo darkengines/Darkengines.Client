@@ -69,7 +69,7 @@ Client.prototype.login = async function (emailAddress: string, password: string)
 	const login: (login: string, password: string) => void = null;
 	const query = lambda(
 		{ emailAddress, password },
-		(scope) => () => login(scope.emailAddress, password)
+		(context) => () => login(context.scope.emailAddress, password)
 	).lambdaSource;
 	return await Promise.resolve('');
 };

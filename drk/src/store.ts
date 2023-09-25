@@ -1,4 +1,4 @@
-import { Dictionary } from 'ts-essentials';
+import { DeepPartial, Dictionary } from 'ts-essentials';
 import { Point } from './Spatials/Models/Point';
 import { IEntityModel } from './Model/IEntityModel';
 import { IPropertyModel } from './Model/IPropertyModel';
@@ -46,6 +46,176 @@ export function hasPrimaryKey(model: IEntityModel, entity: unknown) {
 	return model.primaryKey.every(
 		(primaryKeyProperty) => entity?.[primaryKeyProperty.name] !== undefined
 	);
+}
+
+export function delta<T>(
+	store: Store,
+	base: DeepPartial<T> | {},
+	value: DeepPartial<T> | {},
+	entityModel: IEntityModel,
+	cache?: {
+		value: DeepPartial<T> | {};
+		result: { diff: DeepPartial<T> | {}; hasChanged: boolean };
+	}[]
+): { diff: DeepPartial<T> | {}; hasChanged: boolean } {
+	if (!cache) cache = [];
+	if (!entityModel) entityModel = entityModel;
+	let result = cache.find((tuple) => tuple.value == value || tuple.value === value)?.result;
+	if (result) return result;
+	if (base == value) return { diff: {}, hasChanged: false };
+	result = { diff: {}, hasChanged: false };
+
+	cache.push({ value, result });
+
+	const isValuePrimaryKeySet = entityModel.primaryKey.every((p) => value[p.name] !== undefined);
+
+	if (isValuePrimaryKeySet && store) {
+		const valuePrimaryKey = entityModel.primaryKey.reduce(
+			(pk, p) => [...pk, value[p.name]],
+			[]
+		);
+		base = store[entityModel.name]?.[valuePrimaryKey.join(',')];
+	}
+	if (!base) {
+		value['$isCreation'] = true;
+		base = {};
+	}
+	const valueKeys = Object.keys(value);
+	entityModel.primaryKey.reduce((diff, pk) => {
+		if (value[pk.name]) diff[pk.name] = value[pk.name];
+		return diff;
+	}, result.diff);
+
+	const properties = entityModel.properties.filter((property) =>
+		valueKeys.find((vk) => vk == property.name)
+	);
+	const references = entityModel.references.filter((reference) =>
+		valueKeys.find((vk) => vk == reference.name)
+	);
+	const collections = entityModel.collections.filter((collection) =>
+		valueKeys.find((vk) => vk == collection.name)
+	);
+	properties.forEach((property) => {
+		if (property.typeName == 'Point') {
+			if (
+				base[property.name]?.x !== value[property.name].x ||
+				base[property.name]?.y !== value[property.name].y
+			) {
+				result.hasChanged = result.hasChanged || true;
+				result.diff[property.name] = value[property.name];
+			}
+		} else {
+			if (base[property.name] !== value[property.name]) {
+				result.hasChanged = result.hasChanged || true;
+				result.diff[property.name] = value[property.name];
+			}
+		}
+	});
+	const magicKeys = valueKeys.filter(
+		(vk) => vk == '$isCreation' || vk == '$isDeletion' || vk == 'isDeletion'
+	);
+	magicKeys.forEach((mk) => (result.diff[mk] = true));
+	references.forEach((reference) => {
+		if (value[reference.name]) {
+			const child = delta(
+				store,
+				base[reference.name],
+				value[reference.name],
+				reference.type,
+				cache
+			);
+			reference.foreignKey
+				.map((fk, index) => ({ fk, tfk: reference.targetForeignKey[index] }))
+				.forEach((tuple) => {
+					const fkValue = value[reference.name][tuple.tfk.name];
+					if (fkValue !== base[tuple.fk.name]) {
+						result.diff[tuple.fk.name] = fkValue;
+					}
+				});
+			if (child.hasChanged) {
+				result.diff[reference.name] = child.diff;
+			}
+			let referenceChanged = false;
+			if (
+				(referenceChanged =
+					base[reference.name] == undefined && value[reference.name] !== undefined)
+			) {
+				result.diff[reference.name] = child.diff;
+			}
+			referenceChanged =
+				referenceChanged ||
+				reference.foreignKey.any(
+					(fkProperty) =>
+						result.diff[fkProperty.name] !== undefined &&
+						base[fkProperty.name] !== result.diff[fkProperty.name]
+				);
+			result.hasChanged = result.hasChanged || referenceChanged;
+			result.hasChanged = result.hasChanged || child.hasChanged;
+		} else {
+			if (value[reference.name] != base[reference.name]) {
+				result.diff[reference.name] = null;
+				result.hasChanged = true;
+			}
+		}
+	});
+	collections.forEach((collection) => {
+		const collectionType = collection.type;
+		const baseCollection: unknown[] = base[collection.name] || [];
+		const toUpdate = baseCollection
+			.map((baseItem) => {
+				const item = value[collection.name].find((item) => {
+					return collectionType.primaryKey.reduce(
+						(isEqual, property) =>
+							isEqual &&
+							item[property.name] !== undefined &&
+							baseItem[property.name] !== undefined &&
+							item[property.name] === baseItem[property.name],
+						true
+					);
+				});
+				return item && { item, baseItem };
+			})
+			.filter((item) => item)
+			.map((item) => delta(store, item.baseItem, item.item, collectionType, cache))
+			.filter((item) => item.hasChanged);
+		const toRemove = baseCollection
+			.filter((baseItem) => {
+				return !value[collection.name].find((item) => {
+					return collectionType.primaryKey.reduce(
+						(isEqual, property) =>
+							isEqual &&
+							baseItem[property.name] !== undefined &&
+							item[property.name] === baseItem[property.name],
+						true
+					);
+				});
+			})
+			.map((baseItem) => ({
+				...collectionType.primaryKey.reduce((pk, p) => {
+					pk[p.name] = baseItem[p.name];
+					return pk;
+				}, {}),
+				$isDeletion: true,
+			}));
+		const toAdd = (value?.[collection.name] ?? []).filter((item) => {
+			return !baseCollection.find((baseItem) => {
+				return collectionType.primaryKey.reduce(
+					(isEqual, property) =>
+						isEqual && item[property.name] === baseItem[property.name],
+					true
+				);
+			});
+		});
+		const toAddDiff = toAdd.map(
+			(item) => delta(store, { $isCreation: true }, item, collectionType, cache).diff
+		);
+		const collectionValue = [...toUpdate.map((i) => i.diff), ...toRemove, ...toAddDiff];
+		if (collectionValue.length) {
+			result.diff[collection.name] = collectionValue;
+			result.hasChanged = result.hasChanged || true;
+		}
+	});
+	return result;
 }
 
 export function normalizeMany<TEntity extends object>(

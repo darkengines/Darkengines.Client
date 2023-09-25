@@ -8,26 +8,31 @@ import {
 import { IEntityModel } from '../Model/IEntityModel';
 import { IModel } from '../Model/IModel';
 import { Store } from '../store';
-import EntityModelFieldFactory from './DarkenginesForm/EntityModelFieldFactory';
+import { EntityModelFieldFactory } from './DarkenginesForm/EntityModelFieldFactory';
 import { IFieldFactory } from './DarkenginesForm/IFieldFactory';
 import LocalizationCollectionFieldFactory from './DarkenginesForm/LocalizationCollectionFieldFactory';
 import PropertyFieldFactory from './DarkenginesForm/PropertyFieldFactory';
 import ReferenceFieldFactory from './DarkenginesForm/ReferenceFieldFactory';
+import CollectionFieldFactory from './DarkenginesForm/CollectionFieldFactory';
 
 const Forms = { IFieldFactory: Symbol.for('IFieldFactory') };
-
+declare module 'inversify' {
+	interface Container {
+		addForms(): Container;
+	}
+}
 function bindFieldFactory(container: Container): interfaces.BindingToSyntax<IFieldFactory> {
 	return container.bind<IFieldFactory>(Forms.IFieldFactory);
 }
 
-export function addForms(container: Container) {
-	bindFieldFactory(container).to(EntityModelFieldFactory).inSingletonScope();
-	bindFieldFactory(container).to(PropertyFieldFactory).inSingletonScope();
-	bindFieldFactory(container).to(ReferenceFieldFactory).inSingletonScope();
-	//bindFieldFactory(container).to(CollectionFieldFactory).inSingletonScope();
-	bindFieldFactory(container).to(LocalizationCollectionFieldFactory).inSingletonScope();
-	return container;
-}
+Container.prototype.addForms = function (): Container {
+	bindFieldFactory(this).to(EntityModelFieldFactory).inSingletonScope();
+	bindFieldFactory(this).to(PropertyFieldFactory).inSingletonScope();
+	bindFieldFactory(this).to(ReferenceFieldFactory).inSingletonScope();
+	bindFieldFactory(this).to(CollectionFieldFactory).inSingletonScope();
+	bindFieldFactory(this).to(LocalizationCollectionFieldFactory).inSingletonScope();
+	return this;
+};
 
 export { Forms };
 export interface IFormField {

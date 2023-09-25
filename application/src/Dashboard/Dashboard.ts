@@ -94,7 +94,7 @@ export class Dashboard extends LitElement {
 			${until(this.renderGrid(), html`Loading...`)} <drk-terminal></drk-terminal> ${lorem}`;
 	}
 	async renderGrid() {
-		const gridProps = await this.adminProps.darkenginesGrid;
+		const gridProps = await this.adminProps.grid;
 		gridProps.model = this.adminProps.model;
 		const actions: IDarkenginesGridActions = {
 			setFilter: async (grid, filter) =>
