@@ -21,8 +21,8 @@ export class Client {
 		model: IEntityModel | string,
 		entity: DeepPartial<TEntity>
 	): Promise<TEntity> {
-		const modelName = typeof model == 'string' ? model : model.name;
-		const queryString = `${modelName}.SaveOrUpdate(${JSON.stringify(decycle(entity))})`;
+		const modelName = typeof model == 'string' ? model : model.fullName;
+		const queryString = `Mutation.Mutate('${modelName}', ${JSON.stringify(decycle(entity))})`;
 		const query = queryProvider.queryAuthenticated<TEntity>(queryString);
 		return await query.execute();
 	}

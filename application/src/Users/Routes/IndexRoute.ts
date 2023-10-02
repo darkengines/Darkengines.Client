@@ -50,14 +50,18 @@ export class IndexRoute implements IRoute, IIndexRoute {
 			model: selectedModel,
 			grid: undefined,
 		};
-		state = await setModel(state, selectedModel, this.columnFactories);
+		state.grid = setModel(selectedModel, this.columnFactories);
 
 		const actions: IDarkenginesAdminActions = {
 			setFilter,
 			setOrder,
 			setPagination,
 			setModel: async (darkenginesAdmin: IDarkenginesAdminProps, model: IEntityModel) => {
-				return await setModel(darkenginesAdmin, model, this.columnFactories);
+				const grid = setModel(model, this.columnFactories);
+				return {
+					...darkenginesAdmin,
+					grid
+				}
 			},
 			edit: async (item) => console.log('edit'),
 			add: async () => console.log('add'),

@@ -37,24 +37,7 @@ export default class CollectionComponentFactory extends ComponentFactory<ICollec
 	canHandle(model: ICollectionModel) {
 		return model.modelType == 'CollectionModel';
 	}
-	async edit(props: ICollectionEditorProps, actions: ICollectionEditorActions) {
-
-		const collectionProps = await setModel(
-			{ model: props.model.type, grid: props.grid },
-			props.model.type,
-			this.columnFactories
-		);
-
-		props = {
-			...props,
-			grid: collectionProps.grid.then(async x => {
-				return {
-					...props.grid,
-					...x
-				};
-			}),
-		};
-
+	edit(props: ICollectionEditorProps, actions: ICollectionEditorActions) {
 		return html`<drk-collection-editor
 			.props=${props}
 			.actions=${actions}

@@ -23,6 +23,7 @@ import {
 	applyIncludes,
 	applyPagination,
 	setFilter,
+	setModel,
 	setOrder,
 	setPagination,
 } from '../../Grid/Grid';
@@ -86,26 +87,12 @@ export default class CollectionFieldFactory extends FieldFactory<ICollectionMode
 		const getComponentProps: (formProps: IFormProps) => ICollectionEditorProps = (
 			formProps
 		) => {
-			const grid: IDarkenginesGridProps = {
-				columns: columnFactoryResult.columns.toDictionary((column) => column.name),
-				actions: undefined,
-				data: [],
-				filter: columnFactoryResult.filter,
-				model: formProps.model,
-				order: {},
-				pagination: {
-					pageIndex: 0,
-					pageCount: 0,
-					count: 0,
-					itemsPerPage: 32,
-				},
-			};
-
+			const grid = setModel(collection.type, this.columnFactories);
 			const collectionField = formProps.fields[collection.name] as ICollectionFormField;
 			const filter = collectionField.filter ?? columnFactoryResult.filter;
 
 			const collectionEditorProps: ICollectionEditorProps = {
-				grid: Promise.resolve(grid),
+				grid: grid,
 				component: undefined,
 				context: context,
 				form: { ...collectionField.form },
@@ -154,10 +141,10 @@ export default class CollectionFieldFactory extends FieldFactory<ICollectionMode
 			};
 
 			const gridActions: IDarkenginesGridActions = {
-				setFilter: async (grid, filter) => await setFilter(grid, formProps.model, filter),
-				setOrder: async (grid, order) => await setOrder(grid, formProps.model, order),
+				setFilter: async (grid, filter) => await setFilter(grid, grid.model, filter),
+				setOrder: async (grid, order) => await setOrder(grid, grid.model, order),
 				setPagination: async (grid, pagination) =>
-					await setPagination(grid, formProps.model, pagination),
+					await setPagination(grid, grid.model, pagination),
 				edit: async (item) => console.log('edit'),
 				delete: async (props) => {
 					console.log('delete');

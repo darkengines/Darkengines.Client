@@ -13,7 +13,7 @@ export class Int32ComponentFactory implements ComponentFactory<IPropertyModel, n
 	display(props: IComponentProps<IPropertyModel, number>, actions: IComponentActions) {
 		return html`<drk-int-display .props=${props}></drk-int-display>`;
 	}
-	async edit(
+	edit(
 		props: IEditorComponentProps<IPropertyModel, number>,
 		actions: IEditorComponentActions<IPropertyModel, number>
 	) {

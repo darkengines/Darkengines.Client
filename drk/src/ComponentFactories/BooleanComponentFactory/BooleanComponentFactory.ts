@@ -19,7 +19,7 @@ export class BooleanComponentFactory implements ComponentFactory<IPropertyModel,
 	display(props: IComponentProps<IPropertyModel, boolean>, _actions: IComponentActions) {
 		return html`<drk-boolean-display .props=${props}></drk-boolean-display>`;
 	}
-	async edit(
+	edit(
 		props: IEditorComponentProps<IPropertyModel, boolean>,
 		actions: IEditorComponentActions<IPropertyModel, boolean>
 	) {

@@ -20,7 +20,7 @@ export class StringComponentFactory implements ComponentFactory<IPropertyModel, 
 	display(props: IComponentProps<IPropertyModel, string>, actions: IComponentActions) {
 		return html`<drk-string-display .props=${props}></drk-string-display>`;
 	}
-	async edit(
+	edit(
 		props: IEditorComponentProps<IPropertyModel, string>,
 		actions: IEditorComponentActions<IPropertyModel, string>,
 		component: (component: StringEditor) => void

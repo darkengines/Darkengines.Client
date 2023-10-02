@@ -59,7 +59,6 @@ export class DarkenginesForm extends LitElement {
 	public renderFields(fields: IFormField[]) {
 		return repeat(
 			fields,
-			(field) => field.name,
 			(field) => {
 				const props = field.getComponentProps(this.darkenginesAdminProps);
 				const actions = field.getComponentActions(this.darkenginesAdminProps, {
@@ -76,7 +75,7 @@ export class DarkenginesForm extends LitElement {
 					},
 				});
 				const editResult = field.componentFactory.edit(props, actions);
-				return until(editResult, nothing);
+				return editResult;
 			}
 		);
 	}

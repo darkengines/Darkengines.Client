@@ -13,6 +13,7 @@ import { Grid } from '@drk/src/Components/DarkenginesGrid/Grid';
 import { IColumnFactory } from '@drk/src/Components/DarkenginesGrid/IColumnFactory';
 import { inject, multiInject } from 'inversify';
 import Schema from '@drk/src/Model/Schema';
+import { Store } from '@drk/src/store';
 
 export interface IAdministrationGridRouteState {}
 
@@ -41,14 +42,18 @@ export class AdministrationGridRoute implements IRoute, IAdministrationGridRoute
 			model: selectedModel,
 			grid: undefined,
 		};
-		state = await setModel(state, selectedModel, this.columnFactories);
+		state.grid = setModel(selectedModel, this.columnFactories);
 
 		const actions: IDarkenginesAdminActions = {
 			setFilter,
 			setOrder,
 			setPagination,
 			setModel: async (darkenginesAdmin: IDarkenginesAdminProps, model: IEntityModel) => {
-				return await setModel(darkenginesAdmin, model, this.columnFactories);
+				const grid = setModel(model, this.columnFactories);
+				return {
+					...darkenginesAdmin,
+					grid,
+				};
 			},
 			edit: async (item) => console.log('edit'),
 			add: async () => console.log('add'),

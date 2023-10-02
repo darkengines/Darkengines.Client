@@ -21,7 +21,7 @@ export default class ReferenceComponentFactory extends ComponentFactory<IReferen
 	canHandle(model: IReferenceModel) {
 		return model.modelType == 'ReferenceModel';
 	}
-	async edit(props: IReferenceEditorProps, actions: IReferenceEditorActions) {
+	edit(props: IReferenceEditorProps, actions: IReferenceEditorActions) {
 		return html`<drk-reference-editor
 			.props=${props}
 			.actions=${actions}

@@ -2,8 +2,8 @@ import mdcTypographyStyles from '!raw-loader!@material/typography/dist/mdc.typog
 import '@material/mwc-formfield';
 import '@material/mwc-icon-button';
 import '@material/mwc-ripple';
-import { css, html, LitElement, nothing, PropertyValues, unsafeCSS } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
+import { css, html, LitElement, nothing, PropertyValueMap, PropertyValues, unsafeCSS } from 'lit';
+import { customElement, property, query, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { IFieldFactoryContext } from '../../Components/DarkenginesForm/IFieldFactory';
 import { DarkenginesGridAction } from '../../Components/DarkenginesGrid/DarkenginesGridAction';
@@ -47,6 +47,8 @@ export class CollectionEditor extends LitElement {
 	@property({ type: Object })
 	public props: ICollectionEditorProps;
 	public actions: ICollectionEditorActions;
+	@state()
+	protected grid: IDarkenginesGridProps;
 	@property({ attribute: false })
 	public edit: boolean = false;
 	@query('#new-menu')
@@ -122,24 +124,36 @@ export class CollectionEditor extends LitElement {
 		super.firstUpdated(_changedProperties);
 		//this.menu.anchor = this.collectionDiv;
 	}
+	protected update(changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
+		if (changedProperties.has('props')) {
+			if (this.props.grid) {
+				(async () => {
+					this.grid = await this.props.grid;
+				})();
+			}
+		}
+		super.update(changedProperties);
+	}
 	render() {
 		let focusableElement: HTMLElement;
 		//const item = this.state.model.componentFactories[0].display(this.state.value);
 		return html`<label id="label" class="mdc-typography--body1">${this.props.model.name}</label>
-			${until(this.renderGrid(), nothing)}`;
+			${this.renderGrid()}`;
 	}
-	async renderGrid() {
+	renderGrid() {
+		if (!this.grid) return nothing;
 		return html`<drk-grid
-			.darkenginesGridProps=${await this.props.grid}
+			.darkenginesGridProps=${this.grid}
 			.darkenginesGridActions=${this.actions.grid}
 		></drk-grid>`;
 	}
 	renderForm() {
-		return html`<div id="editor">
-			<drk-admin-form
-				.comeetAdminProps=${this.props.form.props}
-				.comeetAdminActions=${this.props.form.actions}
-			></drk-admin-form>
-		</div>`;
+		return nothing;
+		// return html`<div id="editor">
+		// 	<drk-admin-form
+		// 		.comeetAdminProps=${this.props.form}
+		// 		.comeetAdminActions=${this.actions.form}
+		// 	></drk-admin-form>
+		// </div>`;
 	}
 }

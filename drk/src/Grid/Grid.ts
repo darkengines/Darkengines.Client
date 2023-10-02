@@ -25,16 +25,10 @@ export function getCountQuery(baseQuery: string) {
 	return `${baseQuery}.Count()`;
 }
 
-interface IGridState {
-	model: IEntityModel,
-	grid: Promise<IDarkenginesGridProps>
-}
-
-export async function setModel<TGridState extends IGridState>(
-	state: TGridState,
+export async function setModel(
 	model: IEntityModel,
 	columnFactories: IColumnFactory[]
-): Promise<TGridState> {
+): Promise<IDarkenginesGridProps> {
 	const result = await columnFactories
 		.find((columnFactory) => columnFactory.canHandle(model))
 		.createColumns(columnFactories, model);
@@ -66,14 +60,7 @@ export async function setModel<TGridState extends IGridState>(
 			},
 		};
 	});
-	return {
-		...state,
-		model: model,
-		grid: Promise.resolve({
-			...(await darkenginesGrid),
-			model,
-		}),
-	};
+	return darkenginesGrid;
 }
 export async function feedDarkenginesGrid(
 	darkenginesGrid: IDarkenginesGridProps,

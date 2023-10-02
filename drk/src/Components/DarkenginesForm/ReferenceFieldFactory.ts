@@ -7,7 +7,7 @@ import {
 } from '../../ComponentFactories/ReferenceComponentFactory/ReferenceEditor';
 import Queryable from '../../Expressions/Queryable';
 import { IReferenceModel } from '../../Model/IReferenceModel';
-import { normalize } from '../../store';
+import { normalize, normalizeMany } from '../../store';
 import { IEntityModel } from '../../Model/IEntityModel';
 import { IFilter } from '../DarkenginesGrid/IDarkenginesGrid';
 import { IFormActions, IFormField, IFormProps } from '../Forms';
@@ -83,7 +83,7 @@ export default class ReferenceFieldFactory extends FieldFactory<IReferenceModel>
 			};
 		};
 		function getBaseQuery(model: IEntityModel) {
-			let query = `${model.name}Admin.Query`;
+			let query = apiClient.query(model).code;
 			query = applyIncludes(query, model);
 			return query;
 		}
@@ -130,10 +130,15 @@ export default class ReferenceFieldFactory extends FieldFactory<IReferenceModel>
 						pageCount: 1,
 					});
 					const results = await apiClient.rawQuery<any[]>(query).execute();
+					const normalizationResult = normalizeMany(
+						{ store: formProps.store },
+						reference.type,
+						results
+					);
 					const referenceFormField: IReferenceFormField = {
 						...(formProps.fields[reference.name] as IReferenceFormField),
 						filter: props.filter,
-						searchResult: results,
+						searchResult: normalizationResult.storedEntities,
 					};
 					formProps = {
 						...formProps,
@@ -141,6 +146,7 @@ export default class ReferenceFieldFactory extends FieldFactory<IReferenceModel>
 							...formProps.fields,
 							[reference.name]: referenceFormField,
 						},
+						store: normalizationResult.context.store,
 					};
 					formActions.formChanged(formProps);
 					return { ...props, searchResults: results };
@@ -229,7 +235,7 @@ export default class ReferenceFieldFactory extends FieldFactory<IReferenceModel>
 				},
 				referenceChanged: (props) => {
 					const normalizationResult = normalize(
-						formProps.store,
+						{ store: formProps.store },
 						reference.type,
 						props.value
 					);

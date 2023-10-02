@@ -16,12 +16,12 @@ const administrationEditorRouteService = serviceCollection.get<IAdministrationEd
 );
 
 export const administrationGrid = makeRoute({
-	path: ['/', '/:modelName'],
+	path: ['/index', '/index/:modelName'],
 	route: administrationGridRouteService,
 });
 
 export const administrationEditor = makeRoute({
-	path: '/:modelName/*routeIdentifier',
+	path: ['/:modelName/*routeIdentifier', '/:modelName'],
 	route: administrationEditorRouteService,
 });
 

@@ -117,7 +117,8 @@ export class DarkenginesSearchMenu extends LitElement {
 				}}
 			>
 				<div id="filter">
-					<mwc-textfield
+					<slot name="filter"></slot>
+					<!-- <mwc-textfield
 						placeholder="${msg('Search')}"
 						outlined
 						id="filter-input"
@@ -129,7 +130,7 @@ export class DarkenginesSearchMenu extends LitElement {
 								filterValue: this.filterInput.value,
 							});
 						}}
-					></mwc-textfield>
+					></mwc-textfield> -->
 				</div>
 				<mwc-list wrapFocus rootTabbable id="results"> <slot></slot> </mwc-list
 			></mwc-menu-surface>

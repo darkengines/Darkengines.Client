@@ -6,6 +6,7 @@ import { IPropertyModel } from './IPropertyModel';
 import { IReferenceModel } from './IReferenceModel';
 
 export interface IEntityModel extends IModel {
+	fullName: string;
 	namespace: string[];
 	members: IMember[];
 	interfaces: string[];

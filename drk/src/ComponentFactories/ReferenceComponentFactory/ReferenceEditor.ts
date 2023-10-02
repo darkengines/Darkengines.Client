@@ -144,7 +144,7 @@ export class ReferenceEditor extends LitElement {
 										{
 											actions: DarkenginesGridAction.Edit,
 											columns: {},
-											data: [],
+											data: [this.props.value],
 											filter: undefined,
 											model: undefined,
 											order: undefined,
@@ -188,7 +188,7 @@ export class ReferenceEditor extends LitElement {
 												{
 													actions: DarkenginesGridAction.Edit,
 													columns: {},
-													data: [],
+													data: [this.props.value],
 													filter: undefined,
 													model: undefined,
 													order: undefined,
