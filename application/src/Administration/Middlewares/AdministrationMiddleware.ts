@@ -12,8 +12,7 @@ export interface IAdministrationMiddleware {
 export class AdministrationMiddleware implements IMiddleware, IAdministrationMiddleware {
 	async handler(context, next) {
 		const nextResult = await next();
-		return html`Administration
-			<div>${nextResult}</div>`;
+		return nextResult;
 	}
 	display() {
 		return html`Administration`;

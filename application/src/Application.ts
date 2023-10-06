@@ -1,5 +1,14 @@
 import { setConfig } from '@drk/src/config';
 import config from '../config/appsettings.config.json';
+import '@material/web/textfield/outlined-text-field';
+import '@material/web/select/outlined-select';
+import '@material/web/menu/menu';
+import '@material/web/menu/menu-item';
+import '@material/web/select/select-option';
+import '@material/web/button/elevated-button';
+import '@material/web/button/filled-button';
+import '@material/web/button/text-button';
+import '@material/web/button/outlined-button';
 
 setConfig(config);
 

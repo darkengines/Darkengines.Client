@@ -7,7 +7,7 @@ import { defaultHeader, form, signUpFooter } from '../../../Common/Common';
 import commonCss from '!raw-loader!../../../Common/Common.css';
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
 import oval from '@drk/src/Components/DarkenginesButton/oval.svg';
-import '@material/web/icon/icon.js';
+
 import { msg } from '@lit/localize';
 
 export interface IEmailVerificationProps {

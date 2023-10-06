@@ -75,6 +75,7 @@ export class ReferenceEditor extends LitElement {
 					position: sticky;
 					top: 0;
 					z-index: 2;
+					border-radius: 8px 8px 0 0;
 				}
 				#value {
 					padding: var(--content-spacing);
@@ -86,6 +87,7 @@ export class ReferenceEditor extends LitElement {
 					border-left: var(--primary-color) 4px solid;
 					border-right: var(--primary-color) 4px solid;
 					border-bottom: var(--primary-color) 4px solid;
+					border-radius: 0 0 8px 8px;
 				}
 				#head {
 					display: grid;
@@ -284,10 +286,10 @@ export class ReferenceEditor extends LitElement {
 
 	renderForm() {
 		return html`<div id="editor">
-			<drk-admin-form
+			<drk-form
 				.comeetAdminProps=${this.props.form.props}
 				.comeetAdminActions=${this.props.form.actions}
-			></drk-admin-form>
+			></drk-form>
 		</div>`;
 	}
 }

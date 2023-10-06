@@ -72,7 +72,7 @@ export default class DarkenginesAdmin extends LitElement {
 						if (repository && repository !== this.adminProps.model) {
 							const comeetAdminProps = await this.adminActions.setModel(
 								this.adminProps,
-								repository,
+								repository
 							);
 							if (comeetAdminProps) this.adminProps = comeetAdminProps;
 						}
@@ -107,12 +107,8 @@ export default class DarkenginesAdmin extends LitElement {
 			setOrder: async (grid, order) =>
 				await this.adminActions.setOrder(grid, this.adminProps.model, order),
 			setPagination: async (grid, pagination) =>
-				await this.adminActions.setPagination(
-					grid,
-					this.adminProps.model,
-					pagination
-				),
-			edit: async (item) => this.adminActions.edit(item),
+				await this.adminActions.setPagination(grid, this.adminProps.model, pagination),
+			edit: async (item) => this.adminActions.edit(this.adminProps, item),
 			delete: async (item) => {
 				this.adminProps = { ...this.adminProps, deleteItem: item };
 			},

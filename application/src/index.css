@@ -124,6 +124,7 @@ a {
 	--md-sys-color-on-primary-container: var(--on-background-color);
 	--md-sys-color-secondary: var(--secondary-color);
 	--md-sys-color-secondary-container: var(--secondary-color-light);
+	--md-sys-color-surface-container: var(--surface-background-color);
 	--md-sys-color-on-secondary: var(--on-secondary-color);
 	--md-sys-color-on-secondary-container: var(--on-background-color-light);
 	--md-sys-color-tertiary: #4b607c;
@@ -135,7 +136,7 @@ a {
 	--md-sys-color-on-error: #ffffff;
 	--md-sys-color-on-error-container: #410002;
 	--md-sys-color-outline: #6f7979;
-	--md-sys-color-background: #fafdfc;
+	--md-sys-color-background: var(--background-color);
 	--md-sys-color-on-background: var(--on-background-color);
 	--md-sys-color-surface: var(--surface-background-color);
 	--md-sys-color-on-surface: var(--on-surface-color);

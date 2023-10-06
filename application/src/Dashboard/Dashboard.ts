@@ -14,10 +14,7 @@ import {
 } from '@drk/src/Styles/Material/index';
 import { msg } from '@lit/localize';
 import '@material/mwc-icon-button/mwc-icon-button.js';
-import '@material/web/button/text-button';
-import '@material/web/ripple/ripple.js';
-import '@material/web/textfield/filled-text-field';
-import '@material/web/textfield/outlined-text-field';
+
 import { css, html, LitElement, PropertyValueMap, svg, unsafeCSS } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
@@ -103,7 +100,7 @@ export class Dashboard extends LitElement {
 				await this.adminActions.setOrder(grid, this.adminProps.model, order),
 			setPagination: async (grid, pagination) =>
 				await this.adminActions.setPagination(grid, this.adminProps.model, pagination),
-			edit: async (item) => this.adminActions.edit(item),
+			edit: async (item) => this.adminActions.edit(this.adminProps, item),
 			delete: async (item) => {
 				this.adminProps = { ...this.adminProps, deleteItem: item };
 			},

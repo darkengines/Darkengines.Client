@@ -46,7 +46,7 @@
 		"@material/mwc-snackbar": "^0.27.0",
 		"@material/mwc-textfield": "^0.27.0",
 		"@material/typography": "^14.0.0-canary.53b3cad2f.0",
-		"@material/web": "^1.0.0-pre.16",
+		"@material/web": "^1.0.0",
 		"@open-wc/lit-helpers": "^0.4.0-next.1",
 		"@types/dagre": "^0.7.48",
 		"@types/tinymce": "^4.6.5",
@@ -72,6 +72,12 @@
 		"ste-promise-events": "^3.0.7",
 		"tinymce": "^6.2.0",
 		"ts-essentials": "^9.3.0",
-		"web-worker": "^1.2.0"
+		"@material/button": "^14.0.0",
+		"@material/textfield": "^14.0.0",
+		"@types/jquery": "^3.5.16",
+		"jquery": "^3.7.0",
+		"jquery.terminal": "^2.36.0",
+		"web-worker": "^1.2.0",
+		"xterm": "^5.2.1"
 	}
 }

@@ -2,9 +2,9 @@ import mdcTypographyCss from '!raw-loader!@material/typography/dist/mdc.typograp
 import '@material/mwc-icon';
 import '@material/mwc-icon-button';
 import { IconButton } from '@material/mwc-icon-button';
-import { SelectedDetail } from '@material/mwc-list';
-import { Menu } from '@material/mwc-menu';
 import '@material/mwc-select';
+import { MdMenu, MenuItem } from '@material/web/menu/menu';
+
 import { css, html, LitElement, nothing, PropertyValues, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators/custom-element.js';
 import { property } from 'lit/decorators/property.js';
@@ -17,6 +17,7 @@ import { IDarkenginesGridActions, IDarkenginesGridProps, Order } from './IDarken
 import IDarkenginesGridLayout from './IDarkenginesGridLayout';
 //import { scrollbarStyle } from '../../Theme/scrollbar';
 import { msg } from '@lit/localize';
+import gifUrl from '../../../../application/assets/images/dmet32.gif';
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -25,7 +26,7 @@ declare global {
 }
 @customElement('drk-grid')
 export class DarkenginesGrid extends LitElement {
-@property({ attribute: false })
+	@property({ attribute: false })
 	public darkenginesGridProps: IDarkenginesGridProps;
 	public darkenginesGridActions: IDarkenginesGridActions;
 	@property({ type: Object })
@@ -54,9 +55,15 @@ export class DarkenginesGrid extends LitElement {
 					--scrollbar-size: 16px;
 					--firefox-scrollbar-width: auto;
 				}
+				.cell.data-placeholder {
+					font-size: xx-large;
+					height: 256px;
+					opacity: 0.66;
+					text-align: left;
+					padding: calc(var(--content-padding) * 4);
+				}
 				#grid-layout-wrapper {
 					border: 1px solid rgba(0, 0, 0, 0.38);
-					transform: translateZ(0px);
 					width: auto;
 					height: 100%;
 					max-height: 100%;
@@ -101,6 +108,8 @@ export class DarkenginesGrid extends LitElement {
 					grid-auto-flow: column;
 					grid-auto-columns: auto;
 					justify-content: start;
+					grid-template-columns: subgrid;
+					grid-template-rows: subgrid;
 				}
 
 				.column {
@@ -111,6 +120,7 @@ export class DarkenginesGrid extends LitElement {
 					grid-template-columns: auto;
 					align-content: start;
 					justify-items: start;
+					grid-template-rows: subgrid;
 				}
 				.column:last-child {
 					border-right: none;
@@ -207,17 +217,17 @@ export class DarkenginesGrid extends LitElement {
 	}
 	async updated(_changedProperties: PropertyValues) {
 		super.updated(_changedProperties);
-		if (
-			!this.layout &&
-			this.darkenginesGridProps?.columns &&
-			this.darkenginesGridProps?.data.length
-		) {
-			await this.updateComplete;
-			setTimeout(async () => {
-				await new Promise((resolve) => requestAnimationFrame(resolve));
-				await this.applyLayout();
-			}, 0);
-		}
+		// if (
+		// 	!this.layout &&
+		// 	this.darkenginesGridProps?.columns &&
+		// 	this.darkenginesGridProps?.data.length
+		// ) {
+		// 	await this.updateComplete;
+		// 	setTimeout(async () => {
+		// 		await new Promise((resolve) => requestAnimationFrame(resolve));
+		// 		await this.applyLayout();
+		// 	}, 0);
+		// }
 	}
 
 	async applyLayout() {
@@ -328,94 +338,139 @@ export class DarkenginesGrid extends LitElement {
 	render() {
 		if (!this.darkenginesGridProps) return nothing;
 		const columns = Object.values(this.darkenginesGridProps.columns) as IColumn[];
+		const layoutStyle = `
+			grid-template-columns:${Object.entries(this.darkenginesGridProps.columns).length}fr;
+			grid-template-rows: auto auto ${this.darkenginesGridProps.data?.length || 1}fr
+		`;
+		const gridStyle = `
+			grid-column:${Object.entries(this.darkenginesGridProps.columns).length + 1} span;
+		`;
 		return html` ${this.renderLayoutStyles()}
 			<div id="grid-layout-wrapper">
-				<div id="grid-layout-scroller">
-					<div>
-						<div id="head" class="grid">
-							${repeat(
-								columns,
-								(column) => column.name,
-								(column, index) => {
-									const filter = column.getFilter(
-										this.darkenginesGridProps.filter.args
-									);
-									let filterMenu: Menu;
-									let filterMenuButton: IconButton;
-									return html`<div
-										class=${classMap({
-											column: true,
-											last: index == columns.length - 1,
-										})}
+				<div
+					id="grid-layout-scroller"
+					style="${layoutStyle}; grid-row: ${2 + this.darkenginesGridProps.data?.length ??
+					0} span"
+				>
+					<div id="head" class="grid" style="${gridStyle}; grid-row: 2 span">
+						${repeat(
+							columns,
+							(column) => column.name,
+							(column, index) => {
+								const filter = column.getFilter(
+									this.darkenginesGridProps.filter.args
+								);
+								let filterMenu: MdMenu;
+								let filterMenuButton: IconButton;
+								let menuClosing = false;
+								return html`<div
+									class=${classMap({
+										column: true,
+										last: index == columns.length - 1,
+									})}
+									style="grid-row: 2 span"
+								>
+									<div
+										class="cell title mdc-typography--body1"
+										@click=${(e: Event) => this.onOrder(column)}
 									>
-										<div
-											class="cell title mdc-typography--body1"
-											@click=${(e: Event) => this.onOrder(column)}
-										>
-											<mwc-ripple></mwc-ripple>
-											${column.displayName}
-											<span class="order">
-												${this.darkenginesGridProps.order[column.name]
-													?.order > 0
-													? '▲'
-													: this.darkenginesGridProps.order[column.name]
-															?.order < 0
-													? '▼'
-													: nothing}
-											</span>
-										</div>
-										<div class="cell filter">
+										<mwc-ripple></mwc-ripple>
+										${column.displayName}
+										<span class="order">
+											${this.darkenginesGridProps.order[column.name]?.order >
+											0
+												? '▲'
+												: this.darkenginesGridProps.order[column.name]
+														?.order < 0
+												? '▼'
+												: nothing}
+										</span>
+									</div>
+									<div class="cell filter">
+										<div>
 											<mwc-icon-button
-												${ref((e) => {
-													if (e) {
-														filterMenuButton = e as IconButton;
-														if (filterMenu) {
-															//filterMenu.anchor = filterMenuButton;
-															// filterMenu.x =
-															// 	e?.getBoundingClientRect()?.x;
-															// filterMenu.y =
-															// 	e?.getBoundingClientRect()?.y;
-														}
-													}
-												})}
 												icon="filter_alt"
 												@click=${(e: Event) => {
 													const menu = (
 														e.currentTarget as HTMLElement
 													).parentElement.querySelector(
-														'mwc-menu'
-													) as Menu;
-													menu.open = !menu.open;
+														'md-menu'
+													) as MdMenu;
+													if (!menuClosing) menu.open = !menu.open;
 												}}
 											></mwc-icon-button>
-											<mwc-menu
+											<md-menu
+												positioning="fixed"
 												quick
-												${ref((e: Menu) => {
+												${ref((e: MdMenu) => {
 													if (e) {
+														e.anchorElement =
+															e.previousElementSibling as HTMLElement;
 														filterMenu = e;
-														if (filterMenuButton) {
-															//filterMenu.anchor = filterMenuButton;
-															//filterMenu.x =
-															//	filterMenuButton.getBoundingClientRect()?.x;
-															//filterMenu.y =
-															//		filterMenuButton?.getBoundingClientRect()?.y;
-														}
 													}
 												})}
+												@closing=${(e) => {
+													menuClosing = true;
+												}}
+												@closed=${(e) => {
+													menuClosing = false;
+												}}
 											>
-												<mwc-list
-													activatable
-													@selected=${async (
-														e: CustomEvent<SelectedDetail>
-													) => {
-														const newSelectedOperator =
-															column.operators[
-																e.detail.index as number
-															];
-														if (
-															newSelectedOperator &&
-															filter.operator != newSelectedOperator
-														) {
+												${repeat(
+													column.operators,
+													(operator) => operator.name,
+													(operator) => {
+														return html`<md-menu-item
+															@click=${async (e: MouseEvent) => {
+																if (filter.operator != operator) {
+																	this.darkenginesGridProps =
+																		await this.darkenginesGridActions.setFilter(
+																			this
+																				.darkenginesGridProps,
+																			column.setFilter(
+																				this
+																					.darkenginesGridProps
+																					.filter.args,
+																				{
+																					...filter,
+																					operator,
+																				}
+																			)
+																		);
+																	filterMenu.close();
+																}
+															}}
+															?active=${filter.operator == operator}
+														>
+															<div slot="headline">
+																${operator.shortDisplayName}
+															</div>
+														</md-menu-item> `;
+													}
+												)}
+											</md-menu>
+										</div>
+										${repeat(
+											filter.operator.parameters,
+											(parameter: any) => parameter.name,
+											(parameter: any) => {
+												const componentFactory =
+													parameter.typeName == '*'
+														? column.model.componentFactories[0]
+														: parameter.componentFactories[0];
+												return componentFactory.filter(
+													{
+														model: {
+															...column.model,
+															isNullable: true,
+														} as any,
+														component: {
+															label: undefined,
+														},
+														value: filter.args,
+													},
+													{
+														valueChanged: async (editorProps) => {
 															this.darkenginesGridProps =
 																await this.darkenginesGridActions.setFilter(
 																	this.darkenginesGridProps,
@@ -424,134 +479,102 @@ export class DarkenginesGrid extends LitElement {
 																			.filter.args,
 																		{
 																			...filter,
-																			operator:
-																				newSelectedOperator,
+																			args: editorProps.value,
 																		}
 																	)
 																);
-															filterMenu.close();
-														}
-													}}
-												>
-													${repeat(
-														column.operators,
-														(operator) => operator.name,
-														(operator) => {
-															return html`<mwc-list-item
-																?selected=${filter.operator ==
-																operator}
-																?activated=${filter.operator ==
-																operator}
-																>${operator.shortDisplayName}</mwc-list-item
-															>`;
-														}
-													)}
-												</mwc-list>
-											</mwc-menu>
-
-											${repeat(
-												filter.operator.parameters,
-												(parameter: any) => parameter.name,
-												(parameter: any) => {
-													const componentFactory =
-														parameter.typeName == '*'
-															? column.model.componentFactories[0]
-															: parameter.componentFactories[0];
-													return componentFactory.filter(
-														{
-															model: {
-																...column.model,
-																isNullable: true,
-															} as any,
-															component: {
-																label: undefined,
-															},
-															value: filter.args,
+															//column.onOperatorArgumentChanged(value);
 														},
-														{
-															valueChanged: async (editorProps) => {
-																this.darkenginesGridProps =
-																	await this.darkenginesGridActions.setFilter(
-																		this.darkenginesGridProps,
-																		column.setFilter(
-																			this
-																				.darkenginesGridProps
-																				.filter.args,
-																			{
-																				...filter,
-																				args: editorProps.value,
-																			}
-																		)
-																	);
-																//column.onOperatorArgumentChanged(value);
-															},
-														}
-													);
-												}
-											)}
-										</div>
-									</div>`;
-								}
-							)}
-							<div class="column actions">
-								<div class="cell mdc-typography--body1">${msg('Actions')}</div>
-								<div class="cell mdc-typography--body1"></div>
-							</div>
-						</div>
-						<div id="body" class="grid">
-							${repeat(
-								columns,
-								(column) => column.name,
-								(column, index) => {
-									return html`<div
-										class=${classMap({
-											column: true,
-											last: index == columns.length - 1,
-										})}
-									>
-										${repeat(
-											this.darkenginesGridProps.data,
-											(item) =>
-												this.darkenginesGridProps.model.primaryKey
-													.map((pk) => item[pk.name])
-													.join(','),
-											(item) => html`<div class="cell mdc-typography--body2">
-												${column.componentFactory.display(
-													column.getComponentProps(
-														this.darkenginesGridProps,
-														item
-													),
-													{}
-												)}
-											</div>`
+													}
+												);
+											}
 										)}
-									</div>`;
-								}
-							)}
-							<div class="column actions">
-								${repeat(
-									this.darkenginesGridProps.data,
-									(item) => html`<div class="cell mdc-typography--body2">
-										<mwc-icon-button
-											icon="edit"
-											@click=${async (e: Event) => {
-												await this.darkenginesGridActions.edit(item);
-											}}
-										></mwc-icon-button>
-										<mwc-icon-button
-											icon="delete"
-											@click=${async (e: Event) => {
-												await this.darkenginesGridActions.delete(item);
-											}}
-										></mwc-icon-button>
-									</div>`
-								)}
-							</div>
+									</div>
+								</div>`;
+							}
+						)}
+						<div class="column actions" style="grid-row: 2 span">
+							<div class="cell mdc-typography--body1">${msg('Actions')}</div>
+							<div class="cell mdc-typography--body1"></div>
 						</div>
+					</div>
+					<div
+						id="body"
+						class="grid"
+						style="${gridStyle}; grid-row: ${this.darkenginesGridProps.data?.length ||
+						1} span"
+					>
+						${this.renderData(columns)}
 					</div>
 				</div>
 			</div>
 			<div id="pagination" class="mdc-typography--body1">${this.renderPagination()}</div>`;
+	}
+
+	protected renderDataPlaceholder(columns: IColumn[]) {
+		return html`
+			<div
+				class="cell data-placeholder"
+				style="grid-column:${Object.entries(columns).length || 1} span"
+			>
+				<img src="${gifUrl}" /> No data
+			</div>
+		`;
+	}
+
+	protected renderData(columns: IColumn[]) {
+		if (this.darkenginesGridProps.data?.length < 1) return this.renderDataPlaceholder(columns);
+		return html`
+			${repeat(
+				columns,
+				(column) => column.name,
+				(column, index) => {
+					return html`<div
+						class=${classMap({
+							column: true,
+							last: index == columns.length - 1,
+						})}
+						style="grid-row: ${this.darkenginesGridProps.data?.length || 1} span"
+					>
+						${repeat(
+							this.darkenginesGridProps.data,
+							(item) =>
+								this.darkenginesGridProps.model.primaryKey
+									.map((pk) => item[pk.name])
+									.join(','),
+							(item) => html`<div class="cell mdc-typography--body2">
+								${column.componentFactory.display(
+									column.getComponentProps(this.darkenginesGridProps, item),
+									{}
+								)}
+							</div>`
+						)}
+					</div>`;
+				}
+			)}
+			<div
+				class="column actions"
+				style="grid-row: ${this.darkenginesGridProps.data?.length || 1} span"
+			>
+				${repeat(
+					this.darkenginesGridProps.data,
+					(item) => html`<div class="cell mdc-typography--body2">
+						<mwc-icon-button
+							icon="edit"
+							@click=${async (e: Event) => {
+								await this.darkenginesGridActions.edit(item);
+							}}
+						></mwc-icon-button>
+						<mwc-icon-button
+							icon="delete"
+							@click=${async (e: Event) => {
+								await this.darkenginesGridActions.delete(item);
+							}}
+						></mwc-icon-button>
+					</div>`
+				)}
+			</div>
+		`;
 	}
 
 	protected renderPagination() {

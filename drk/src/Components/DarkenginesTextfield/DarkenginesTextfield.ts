@@ -6,8 +6,8 @@ import { darkenginesTextfieldStyles } from './DarkenginesTextField.Styles';
 import { spread } from '@open-wc/lit-helpers';
 import {
 	TextFieldType,
-	UnsupportedTextFieldType,
 	TextField,
+	UnsupportedTextFieldType
 } from '@material/web/textfield/internal/text-field';
 
 export function addHasRemoveClass(element: HTMLElement) {

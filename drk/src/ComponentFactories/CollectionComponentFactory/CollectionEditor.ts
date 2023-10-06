@@ -80,17 +80,10 @@ export class CollectionEditor extends LitElement {
 					position: sticky;
 					top: 0;
 					z-index: 2;
+					border-radius: 8px 8px 0 0;
 				}
-				#value {
-					padding: var(--content-spacing);
-					display: grid;
-					align-items: center;
-					grid-template-columns: auto;
-					grid-gap: var(--content-spacing);
-					grid-auto-flow: row;
-					border-left: var(--primary-color) 4px solid;
-					border-right: var(--primary-color) 4px solid;
-					border-bottom: var(--primary-color) 4px solid;
+				#grid {
+					
 				}
 				#head {
 					display: grid;
@@ -114,8 +107,6 @@ export class CollectionEditor extends LitElement {
 				mwc-list-item {
 					padding: var(--content-padding);
 					--mdc-menu-item-height: auto;
-				}
-				#editor {
 				}
 			`,
 		];
@@ -142,7 +133,7 @@ export class CollectionEditor extends LitElement {
 	}
 	renderGrid() {
 		if (!this.grid) return nothing;
-		return html`<drk-grid
+		return html`<drk-grid id="grid"
 			.darkenginesGridProps=${this.grid}
 			.darkenginesGridActions=${this.actions.grid}
 		></drk-grid>`;

@@ -8,7 +8,10 @@ declare module '*.pem' {
 }
 declare module '*.png';
 declare module '*.jpg';
-declare module '*.gif';
+declare module "*.gif" {
+	const content: any;
+	export default content;
+  }
 declare module '*.css';
 declare module '*.i18n.json' {
 	const content: any;

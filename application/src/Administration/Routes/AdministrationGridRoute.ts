@@ -14,6 +14,8 @@ import { IColumnFactory } from '@drk/src/Components/DarkenginesGrid/IColumnFacto
 import { inject, multiInject } from 'inversify';
 import Schema from '@drk/src/Model/Schema';
 import { Store } from '@drk/src/store';
+import { runtimeRoot } from 'application/src/Application';
+import { IAdministrationGridProps } from '../Components/AdministrationGrid/AdministrationGrid';
 
 export interface IAdministrationGridRouteState {}
 
@@ -52,11 +54,22 @@ export class AdministrationGridRoute implements IRoute, IAdministrationGridRoute
 				const grid = setModel(model, this.columnFactories);
 				return {
 					...darkenginesAdmin,
+					model,
 					grid,
 				};
 			},
-			edit: async (item) => console.log('edit'),
-			add: async () => console.log('add'),
+			edit: async (props, item) =>
+				runtimeRoot.children.authenticated.children.verifiedUserNode.children.applicationNode.children.administration.children.administrationEditor.execute(
+					props.model.name,
+					props.model.primaryKey.map((pk) => item[pk.name]).join('/')
+				),
+			add: async (props: IDarkenginesAdminProps) => {
+				runtimeRoot.children.authenticated.children.verifiedUserNode.children.applicationNode.children.administration.children.administrationEditor.execute(
+					props.model.name,
+					undefined
+				);
+				return props;
+			},
 			delete: async (props) => {
 				console.log('delete');
 				return props;

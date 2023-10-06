@@ -1,12 +1,9 @@
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
-import '@material/web/textfield/outlined-text-field';
-import '@material/web/select/outlined-select';
-import '@material/web/select/select-option';
-import '@material/web/button/outlined-button';
+
 import commonCss from '!raw-loader!../../../Common/Common.css';
 import { IUserProfile } from '../../Models/IUserProfile';
-import { OutlinedTextField } from '@material/web/textfield/lib/outlined-text-field';
+import { OutlinedTextField } from '@material/web/textfield/internal/outlined-text-field';
 
 declare global {
 	interface HTMLElementTagNameMap {

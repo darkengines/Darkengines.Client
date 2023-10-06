@@ -29,7 +29,7 @@ export interface IDarkenginesAdminActions {
 		model: IEntityModel,
 		order: Dictionary<IOrder>
 	) => Promise<IDarkenginesGridProps>;
-	edit: (item: unknown) => Promise<any>;
+	edit: (comeetAdmin: IDarkenginesAdminProps, item: unknown) => Promise<any>;
 	delete: (comeetAdminProps: IDarkenginesAdminProps) => Promise<IDarkenginesAdminProps>;
 	add: (comeetAdminProps: IDarkenginesAdminProps) => Promise<any>;
 }
